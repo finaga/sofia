@@ -2,557 +2,1247 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Tabuada Pokémon - Sofia</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* ============================================================
+   TABUADA POKÉMON v3 - CSS COMPLETO
+   ============================================================ */
 
-  :root {
-    --red: #DC2626;
-    --red-dark: #991B1B;
-    --blue: #2563EB;
-    --yellow: #FBBF24;
-    --green: #16A34A;
-    --bg: #FEF3C7;
-    --card: #FFFFFF;
-    --ink: #1F2937;
-    --muted: #6B7280;
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-    color: var(--ink);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+:root {
+  --red: #DC2626;
+  --red-dark: #991B1B;
+  --blue: #2563EB;
+  --blue-dark: #1E40AF;
+  --yellow: #FBBF24;
+  --yellow-dark: #92400E;
+  --green: #16A34A;
+  --purple: #9333EA;
+  --bg: #FEF3C7;
+  --card: #FFFFFF;
+  --ink: #1F2937;
+  --muted: #6B7280;
+  --gray-light: #F3F4F6;
+  --gray-border: #E5E7EB;
 
-  .display { font-family: 'Fredoka One', cursive; }
+  /* Pokémon types */
+  --type-normal: #A8A878;
+  --type-fire: #F08030;
+  --type-water: #6890F0;
+  --type-electric: #F8D030;
+  --type-grass: #78C850;
+  --type-ice: #98D8D8;
+  --type-fighting: #C03028;
+  --type-poison: #A040A0;
+  --type-ground: #E0C068;
+  --type-flying: #A890F0;
+  --type-psychic: #F85888;
+  --type-bug: #A8B820;
+  --type-rock: #B8A038;
+  --type-ghost: #705898;
+  --type-dragon: #7038F8;
+  --type-fairy: #EE99AC;
+  --type-steel: #B8B8D0;
+  --type-dark: #705848;
+}
 
-  /* === LAYOUT === */
+html, body { overscroll-behavior: contain; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.display { font-family: 'Fredoka One', cursive; }
+
+button { font-family: inherit; cursor: pointer; }
+input { font-family: inherit; }
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  min-height: 100vh;
+}
+
+@media (max-width: 900px) {
   .app {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 24px;
-    min-height: 100vh;
-  }
-
-  @media (max-width: 900px) {
-    .app { grid-template-columns: 1fr; }
-  }
-
-  /* === MAIN PANEL === */
-  .main {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 28px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 4px solid var(--red);
-    position: relative;
-  }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .title {
-    font-size: 28px;
-    color: var(--red);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .title-icon {
-    width: 36px; height: 36px;
-    background: var(--red);
-    border-radius: 50%;
-    position: relative;
-    border: 3px solid var(--ink);
-  }
-  .title-icon::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 0; right: 0;
-    height: 4px;
-    background: var(--ink);
-    transform: translateY(-50%);
-  }
-  .title-icon::before {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    width: 12px; height: 12px;
-    background: white;
-    border: 3px solid var(--ink);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2;
-  }
-
-  /* === STATS BAR === */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 24px;
-  }
-
-  .stat {
-    background: #F3F4F6;
-    border-radius: 12px;
-    padding: 12px;
-    text-align: center;
-    border: 2px solid #E5E7EB;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: var(--muted);
-    letter-spacing: 0.5px;
-  }
-
-  .stat-value {
-    font-size: 24px;
-    font-weight: 800;
-    margin-top: 4px;
-  }
-
-  .stat.errors { background: #FEE2E2; border-color: #FCA5A5; }
-  .stat.errors .stat-value { color: var(--red); }
-  .stat.score { background: #D1FAE5; border-color: #86EFAC; }
-  .stat.score .stat-value { color: var(--green); }
-  .stat.progress .stat-value { color: var(--blue); }
-
-  /* === PROGRESS BAR === */
-  .progress-bar {
-    height: 12px;
-    background: #E5E7EB;
-    border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 28px;
-    border: 2px solid #D1D5DB;
-  }
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--yellow), var(--red));
-    transition: width 0.4s ease;
-    border-radius: 4px;
-  }
-
-  /* === QUESTION AREA === */
-  .question-area {
-    text-align: center;
-    padding: 30px 20px;
-    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
-    border-radius: 16px;
-    border: 3px dashed var(--blue);
-    margin-bottom: 24px;
-    min-height: 320px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .pokemon-sprite {
-    width: 160px;
-    height: 160px;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    margin-bottom: 12px;
-    animation: bounce 1.5s ease-in-out infinite;
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .pokemon-name {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 4px;
-  }
-
-  .pokemon-name .num {
-    color: var(--muted);
-    font-weight: 600;
-    margin-left: 6px;
-  }
-
-  .pokemon-name .shiny-tag {
-    display: inline-block;
-    background: linear-gradient(135deg, #FBBF24, #F59E0B);
-    color: white;
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 13px;
-    margin-left: 8px;
-    font-weight: 800;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-  }
-
-  .pokemon-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 14px;
-    font-style: italic;
-  }
-
-  .question {
-    font-size: 56px;
-    color: var(--ink);
-    font-family: 'Fredoka One', cursive;
-    letter-spacing: 2px;
-  }
-
-  /* === ANSWER INPUT === */
-  .answer-row {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-
-  .answer-input {
-    width: 140px;
-    height: 70px;
-    font-size: 36px;
-    text-align: center;
-    border: 4px solid var(--blue);
-    border-radius: 12px;
-    font-family: 'Fredoka One', cursive;
-    color: var(--ink);
-    background: white;
-    outline: none;
-    transition: all 0.2s;
-  }
-
-  .answer-input:focus {
-    border-color: var(--red);
-    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
-  }
-
-  .btn {
-    height: 70px;
-    padding: 0 32px;
-    font-size: 22px;
-    font-weight: 800;
-    font-family: 'Fredoka One', cursive;
-    background: var(--red);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    box-shadow: 0 4px 0 var(--red-dark);
-  }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--red-dark); }
-  .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--red-dark); }
-  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-  /* === FEEDBACK === */
-  .feedback {
-    text-align: center;
-    padding: 14px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 18px;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .feedback.correct {
-    background: #D1FAE5;
-    color: #065F46;
-    border: 2px solid var(--green);
-    animation: shake-correct 0.4s;
-  }
-
-  .feedback.wrong {
-    background: #FEE2E2;
-    color: var(--red-dark);
-    border: 2px solid var(--red);
-    animation: shake-wrong 0.4s;
-  }
-
-  .feedback.empty {
-    background: transparent;
-    color: transparent;
-  }
-
-  @keyframes shake-correct {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-  }
-  @keyframes shake-wrong {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
-  }
-
-  /* === SIDEBAR / POKEDEX === */
-  .sidebar {
-    background: var(--card);
-    border-radius: 20px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 4px solid var(--red);
-    height: fit-content;
-    position: sticky;
-    top: 20px;
-  }
-
-  .sidebar-title {
-    font-family: 'Fredoka One', cursive;
-    font-size: 22px;
-    color: var(--red);
-    text-align: center;
-    margin-bottom: 4px;
-  }
-
-  .sidebar-sub {
-    font-size: 13px;
-    color: var(--muted);
-    text-align: center;
-    margin-bottom: 14px;
-    font-weight: 600;
-  }
-
-  .pokedex-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    max-height: 520px;
-    overflow-y: auto;
+    grid-template-columns: 1fr;
     padding: 10px;
-    background: #F3F4F6;
-    border-radius: 12px;
-    border: 2px solid #E5E7EB;
-    scrollbar-width: thin;
+    gap: 14px;
   }
+}
 
-  .pokedex-grid::-webkit-scrollbar { width: 8px; }
-  .pokedex-grid::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 4px; }
-  .pokedex-grid::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
+.main {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 4px solid var(--red);
+  position: relative;
+}
 
-  .pokedex-slot {
-    background: #E5E7EB;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    padding: 4px 2px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-height: 88px;
-    position: relative;
-  }
+@media (max-width: 600px) {
+  .main { padding: 16px; border-radius: 16px; border-width: 3px; }
+}
 
-  .pokedex-slot .num {
-    font-size: 9px;
-    color: var(--muted);
-    font-weight: 700;
-    line-height: 1;
-    margin-bottom: 2px;
-  }
+/* ============================================================
+   HEADER
+   ============================================================ */
 
-  .pokedex-slot .img-wrap {
-    width: 100%;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 
-  .pokedex-slot img {
-    max-width: 100%;
-    max-height: 100%;
-    image-rendering: pixelated;
-  }
+.title {
+  font-size: 26px;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  .pokedex-slot .placeholder-q {
-    font-family: 'Fredoka One', cursive;
-    font-size: 32px;
-    color: #9CA3AF;
-    line-height: 1;
-  }
+@media (max-width: 600px) {
+  .title { font-size: 20px; }
+}
 
-  .pokedex-slot .pname {
-    font-size: 9px;
-    font-weight: 700;
-    color: var(--muted);
-    text-align: center;
-    line-height: 1.1;
-    margin-top: 2px;
-    word-break: break-word;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.title-icon {
+  width: 32px; height: 32px;
+  background: var(--red);
+  border-radius: 50%;
+  position: relative;
+  border: 3px solid var(--ink);
+  flex-shrink: 0;
+}
+.title-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 4px;
+  background: var(--ink);
+  transform: translateY(-50%);
+}
+.title-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 11px; height: 11px;
+  background: white;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
 
-  .pokedex-slot.captured {
-    background: white;
-    border-color: var(--yellow);
-    animation: pop 0.4s ease-out;
-  }
-  .pokedex-slot.captured .pname { color: var(--ink); }
+.header-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 
-  .pokedex-slot.shiny {
-    background: linear-gradient(135deg, #FEF3C7, #FBBF24);
-    border-color: #F59E0B;
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
-  }
-  .pokedex-slot.shiny .pname { color: #92400E; }
+.icon-btn {
+  width: 38px; height: 38px;
+  border: 2px solid var(--gray-border);
+  background: white;
+  border-radius: 10px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+.icon-btn:hover { background: var(--gray-light); transform: translateY(-1px); }
+.icon-btn.active { background: var(--yellow); border-color: var(--yellow-dark); }
 
-  .pokedex-slot.shiny::after {
-    content: '✨';
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    font-size: 14px;
-  }
+/* ============================================================
+   STATS BAR
+   ============================================================ */
 
-  @keyframes pop {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.2); }
-    100% { transform: scale(1); }
-  }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
 
-  .best-score {
-    margin-top: 16px;
-    padding: 12px;
-    background: #FEF3C7;
-    border: 2px solid var(--yellow);
-    border-radius: 12px;
-    text-align: center;
-  }
-  .best-score-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
-    color: #92400E;
-  }
-  .best-score-value {
-    font-family: 'Fredoka One', cursive;
-    font-size: 28px;
-    color: #92400E;
-  }
+@media (max-width: 600px) {
+  .stats { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+}
 
-  /* === OVERLAYS (Start / GameOver / Victory) === */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    padding: 20px;
-    animation: fadeIn 0.3s;
-  }
+.stat {
+  background: var(--gray-light);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  border: 2px solid var(--gray-border);
+}
 
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
 
-  .modal {
-    background: white;
-    border-radius: 24px;
-    padding: 40px;
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-    border: 6px solid var(--red);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
-    animation: slideUp 0.4s ease-out;
-  }
+.stat-value {
+  font-size: 20px;
+  font-weight: 800;
+  margin-top: 2px;
+}
 
-  @keyframes slideUp {
-    from { transform: translateY(40px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
+@media (max-width: 600px) {
+  .stat-value { font-size: 18px; }
+  .stat { padding: 8px; }
+}
 
-  .modal-title {
-    font-family: 'Fredoka One', cursive;
-    font-size: 36px;
-    color: var(--red);
-    margin-bottom: 12px;
-  }
+.stat.errors { background: #FEE2E2; border-color: #FCA5A5; }
+.stat.errors .stat-value { color: var(--red); }
+.stat.score { background: #D1FAE5; border-color: #86EFAC; }
+.stat.score .stat-value { color: var(--green); }
+.stat.progress .stat-value { color: var(--blue); }
+.stat.streak { background: #FEF3C7; border-color: #FBBF24; }
+.stat.streak .stat-value { color: #92400E; }
+.stat.streak.hot {
+  animation: glow 0.8s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from { box-shadow: 0 0 4px rgba(251, 191, 36, 0.4); }
+  to { box-shadow: 0 0 16px rgba(251, 191, 36, 0.8); }
+}
 
-  .modal-subtitle {
-    font-size: 16px;
-    color: var(--muted);
-    margin-bottom: 24px;
-    font-weight: 600;
-  }
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
 
-  .modal-sprite {
-    width: 180px; height: 180px;
-    image-rendering: pixelated;
-    margin: 0 auto 20px;
-    display: block;
-  }
+.progress-bar {
+  height: 10px;
+  background: var(--gray-border);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 2px solid #D1D5DB;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--yellow), var(--red));
+  transition: width 0.4s ease;
+  border-radius: 3px;
+}
 
-  .modal-sprite.fainted {
-    filter: grayscale(100%) brightness(0.7);
-    transform: rotate(180deg);
-  }
+/* ============================================================
+   QUESTION AREA
+   ============================================================ */
 
-  .modal-stats {
-    background: #F3F4F6;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 24px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
+.question-area {
+  text-align: center;
+  padding: 24px 16px;
+  background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+  border-radius: 16px;
+  border: 3px dashed var(--blue);
+  margin-bottom: 20px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
 
-  .modal-stat-label { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
-  .modal-stat-value { font-family: 'Fredoka One', cursive; font-size: 24px; color: var(--ink); }
+@media (max-width: 600px) {
+  .question-area { min-height: 280px; padding: 18px 12px; }
+}
 
-  .modal-rules {
-    background: #DBEAFE;
-    border: 2px solid var(--blue);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 20px;
-    text-align: left;
-    font-size: 14px;
-  }
-  .modal-rules ul { list-style: none; }
-  .modal-rules li { padding: 4px 0; }
-  .modal-rules li::before { content: "▸ "; color: var(--red); font-weight: bold; }
+.pokemon-sprite-wrap {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-bottom: 8px;
+}
 
-  /* === RESPONSIVE ADJUSTMENTS === */
-  @media (max-width: 600px) {
-    .question { font-size: 42px; }
-    .answer-input { width: 110px; font-size: 28px; }
-    .btn { padding: 0 20px; font-size: 18px; }
-    .main, .sidebar { padding: 18px; }
-    .pokedex-grid { grid-template-columns: repeat(3, 1fr); }
-  }
+@media (max-width: 600px) {
+  .pokemon-sprite-wrap { width: 130px; height: 130px; }
+}
+
+.pokemon-sprite {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.pokemon-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (max-width: 600px) {
+  .pokemon-name { font-size: 17px; }
+}
+
+.pokemon-name .num {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.pokemon-name .shiny-tag {
+  display: inline-block;
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.pokemon-types {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+  min-height: 22px;
+}
+
+.type-badge {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: white;
+  padding: 2px 10px;
+  border-radius: 10px;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+  letter-spacing: 0.3px;
+}
+
+.question {
+  font-size: 54px;
+  color: var(--ink);
+  font-family: 'Fredoka One', cursive;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 600px) {
+  .question { font-size: 40px; }
+}
+
+/* === Pokébola animation === */
+.pokeball-anim {
+  position: absolute;
+  width: 80px; height: 80px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.pokeball-anim.animating {
+  animation: capture 1.0s ease-in-out forwards;
+}
+
+@keyframes capture {
+  0% { opacity: 0; transform: translate(0, 200px) rotate(0deg) scale(0.5); }
+  20% { opacity: 1; transform: translate(0, 0) rotate(360deg) scale(1); }
+  40% { transform: translate(0, 0) rotate(380deg) scale(1.2); }
+  60% { transform: translate(0, 0) rotate(360deg) scale(1); }
+  80% { transform: translate(0, 0) rotate(380deg) scale(1.1); }
+  100% { opacity: 1; transform: translate(0, 0) rotate(360deg) scale(1); }
+}
+
+.pokeball-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================================================
+   ANSWER INPUT
+   ============================================================ */
+
+.answer-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.answer-input {
+  width: 130px;
+  height: 64px;
+  font-size: 32px;
+  text-align: center;
+  border: 4px solid var(--blue);
+  border-radius: 12px;
+  font-family: 'Fredoka One', cursive;
+  color: var(--ink);
+  background: white;
+  outline: none;
+  transition: all 0.2s;
+  -moz-appearance: textfield;
+}
+.answer-input::-webkit-outer-spin-button,
+.answer-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .answer-input { width: 100px; height: 56px; font-size: 26px; }
+}
+
+.answer-input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+}
+
+.btn {
+  height: 64px;
+  padding: 0 26px;
+  font-size: 20px;
+  font-weight: 800;
+  font-family: 'Fredoka One', cursive;
+  background: var(--red);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  transition: all 0.15s;
+  box-shadow: 0 4px 0 var(--red-dark);
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--red-dark); }
+.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--red-dark); }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn.blue { background: var(--blue); box-shadow: 0 4px 0 var(--blue-dark); }
+.btn.blue:hover { box-shadow: 0 6px 0 var(--blue-dark); }
+.btn.blue:active { box-shadow: 0 2px 0 var(--blue-dark); }
+
+.btn.gray {
+  background: #6B7280;
+  box-shadow: 0 4px 0 #374151;
+}
+
+.btn.green { background: var(--green); box-shadow: 0 4px 0 #15803D; }
+
+@media (max-width: 600px) {
+  .btn { padding: 0 18px; font-size: 17px; height: 56px; }
+}
+
+/* ============================================================
+   FEEDBACK
+   ============================================================ */
+
+.feedback {
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 17px;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.feedback.correct {
+  background: #D1FAE5;
+  color: #065F46;
+  border: 2px solid var(--green);
+  animation: shake-correct 0.4s;
+}
+
+.feedback.wrong {
+  background: #FEE2E2;
+  color: var(--red-dark);
+  border: 2px solid var(--red);
+  animation: shake-wrong 0.4s;
+}
+
+.feedback.empty {
+  background: transparent;
+  color: transparent;
+  border: 2px solid transparent;
+}
+
+@keyframes shake-correct {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes shake-wrong {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+/* ============================================================
+   SIDEBAR / POKEDEX
+   ============================================================ */
+
+.sidebar {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 4px solid var(--red);
+  height: fit-content;
+  position: sticky;
+  top: 16px;
+}
+
+@media (max-width: 900px) {
+  .sidebar { position: static; }
+}
+
+@media (max-width: 600px) {
+  .sidebar { padding: 14px; border-radius: 16px; border-width: 3px; }
+}
+
+.sidebar-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 20px;
+  color: var(--red);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.sidebar-sub {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.pokedex-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  max-height: 440px;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--gray-light);
+  border-radius: 12px;
+  border: 2px solid var(--gray-border);
+  scrollbar-width: thin;
+}
+
+@media (max-width: 600px) {
+  .pokedex-grid { grid-template-columns: repeat(5, 1fr); max-height: 380px; }
+}
+
+.pokedex-grid::-webkit-scrollbar { width: 8px; }
+.pokedex-grid::-webkit-scrollbar-track { background: var(--gray-border); border-radius: 4px; }
+.pokedex-grid::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
+
+.pokedex-slot {
+  background: var(--gray-border);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  padding: 3px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 84px;
+  position: relative;
+  transition: transform 0.15s;
+}
+
+.pokedex-slot.captured {
+  cursor: pointer;
+}
+.pokedex-slot.captured:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+.pokedex-slot.captured:active {
+  transform: scale(0.95);
+}
+
+.pokedex-slot .num {
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.pokedex-slot .img-wrap {
+  width: 100%;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pokedex-slot img {
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: pixelated;
+}
+
+.pokedex-slot .placeholder-q {
+  font-family: 'Fredoka One', cursive;
+  font-size: 28px;
+  color: #9CA3AF;
+  line-height: 1;
+}
+
+.pokedex-slot .pname {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.1;
+  margin-top: 2px;
+  word-break: break-word;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pokedex-slot.captured {
+  background: white;
+  border-color: var(--yellow);
+  animation: pop 0.4s ease-out;
+}
+.pokedex-slot.captured .pname { color: var(--ink); }
+
+.pokedex-slot.shiny {
+  background: linear-gradient(135deg, #FEF3C7, #FBBF24);
+  border-color: #F59E0B;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+}
+.pokedex-slot.shiny .pname { color: var(--yellow-dark); }
+.pokedex-slot.shiny::after {
+  content: '✨';
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 14px;
+}
+
+@keyframes pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   BADGES (medalhas)
+   ============================================================ */
+
+.badges {
+  margin-top: 14px;
+  padding: 12px;
+  background: #EDE9FE;
+  border: 2px solid #C4B5FD;
+  border-radius: 12px;
+}
+
+.badges-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #5B21B6;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.badge {
+  aspect-ratio: 1;
+  background: white;
+  border: 2px solid var(--gray-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  filter: grayscale(100%) opacity(0.4);
+  transition: all 0.3s;
+  position: relative;
+}
+
+.badge.earned {
+  filter: none;
+  border-color: var(--purple);
+  background: linear-gradient(135deg, #F5F3FF, #DDD6FE);
+  box-shadow: 0 0 8px rgba(147, 51, 234, 0.4);
+}
+
+.badge-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-bottom: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.badge:hover .badge-tooltip {
+  opacity: 1;
+}
+
+.best-score {
+  margin-top: 14px;
+  padding: 10px;
+  background: #FEF3C7;
+  border: 2px solid var(--yellow);
+  border-radius: 12px;
+  text-align: center;
+}
+.best-score-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--yellow-dark);
+}
+.best-score-value {
+  font-family: 'Fredoka One', cursive;
+  font-size: 24px;
+  color: var(--yellow-dark);
+}
+
+/* ============================================================
+   OVERLAYS / MODALS
+   ============================================================ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  animation: fadeIn 0.3s;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: white;
+  border-radius: 24px;
+  padding: 32px;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  border: 6px solid var(--red);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  animation: slideUp 0.4s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 600px) {
+  .modal { padding: 20px; border-width: 4px; border-radius: 18px; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-title {
+  font-family: 'Fredoka One', cursive;
+  font-size: 30px;
+  color: var(--red);
+  margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+  .modal-title { font-size: 24px; }
+}
+
+.modal-subtitle {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.modal-sprite {
+  width: 160px; height: 160px;
+  image-rendering: pixelated;
+  margin: 0 auto 16px;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .modal-sprite { width: 130px; height: 130px; }
+}
+
+.modal-sprite.fainted {
+  filter: grayscale(100%) brightness(0.7);
+  transform: rotate(180deg);
+}
+
+.modal-stats {
+  background: var(--gray-light);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.modal-stat-label { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+.modal-stat-value { font-family: 'Fredoka One', cursive; font-size: 22px; color: var(--ink); }
+
+.modal-rules {
+  background: #DBEAFE;
+  border: 2px solid var(--blue);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 18px;
+  text-align: left;
+  font-size: 13px;
+}
+.modal-rules ul { list-style: none; }
+.modal-rules li { padding: 3px 0; }
+.modal-rules li::before { content: "▸ "; color: var(--red); font-weight: bold; }
+
+/* ============================================================
+   MODE SELECTOR (start screen)
+   ============================================================ */
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 480px) {
+  .mode-grid { grid-template-columns: 1fr; }
+}
+
+.mode-card {
+  background: white;
+  border: 3px solid var(--gray-border);
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.mode-card:hover {
+  border-color: var(--red);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.mode-card.selected {
+  border-color: var(--red);
+  background: #FEE2E2;
+}
+
+.mode-card-icon { font-size: 28px; margin-bottom: 4px; }
+.mode-card-title { font-family: 'Fredoka One', cursive; font-size: 16px; color: var(--ink); }
+.mode-card-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.table-picker {
+  display: none;
+  background: var(--gray-light);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.table-picker.visible { display: block; }
+
+.table-picker-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+.table-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.table-btn {
+  background: white;
+  border: 2px solid var(--gray-border);
+  border-radius: 10px;
+  padding: 10px 0;
+  font-family: 'Fredoka One', cursive;
+  font-size: 18px;
+  color: var(--ink);
+  transition: all 0.15s;
+}
+.table-btn:hover { border-color: var(--blue); }
+.table-btn.selected {
+  background: var(--blue);
+  border-color: var(--blue-dark);
+  color: white;
+}
+
+/* ============================================================
+   POKEMON INFO MODAL
+   ============================================================ */
+
+.poke-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.poke-modal-num {
+  font-family: 'Fredoka One', cursive;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.poke-modal-close {
+  background: var(--gray-light);
+  border: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+}
+.poke-modal-close:hover { background: var(--gray-border); }
+
+.poke-modal-name {
+  font-family: 'Fredoka One', cursive;
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.poke-modal-desc {
+  background: var(--gray-light);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  margin: 14px 0;
+  text-align: left;
+  font-style: italic;
+}
+
+.poke-modal-data {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.poke-data-item {
+  background: var(--gray-light);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.poke-data-label { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+.poke-data-value { font-family: 'Fredoka One', cursive; font-size: 18px; color: var(--ink); margin-top: 2px; }
+
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--gray-border);
+  border-top-color: var(--red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   RESULT CHART (error breakdown)
+   ============================================================ */
+
+.result-chart {
+  background: var(--gray-light);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.result-chart-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.result-chart-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 40px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.result-chart-label {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.result-chart-bar {
+  height: 14px;
+  background: var(--gray-border);
+  border-radius: 7px;
+  overflow: hidden;
+  position: relative;
+}
+
+.result-chart-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), var(--red));
+  border-radius: 7px;
+  transition: width 0.6s ease;
+}
+
+.result-chart-fill.no-errors {
+  background: var(--green);
+}
+
+.result-chart-count {
+  font-weight: 700;
+  color: var(--red);
+  text-align: right;
+}
+
+.result-chart-count.zero { color: var(--green); }
+
+/* ============================================================
+   TEACHER MODE
+   ============================================================ */
+
+.teacher-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  border-bottom: 2px solid var(--gray-border);
+}
+
+.teacher-tab {
+  padding: 8px 14px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.teacher-tab.active {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+.teacher-panel {
+  text-align: left;
+  font-size: 14px;
+}
+.teacher-panel.hidden { display: none; }
+
+.teacher-section { margin-bottom: 16px; }
+
+.teacher-section h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.teacher-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.teacher-action-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.confirm-text {
+  background: #FEE2E2;
+  border: 2px solid var(--red);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 13px;
+  margin-top: 8px;
+  display: none;
+}
+.confirm-text.visible { display: block; }
+
+.password-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border: 3px solid var(--blue);
+  border-radius: 12px;
+  text-align: center;
+  font-family: 'Fredoka One', cursive;
+  outline: none;
+}
+.password-input.error {
+  border-color: var(--red);
+  animation: shake-wrong 0.4s;
+}
+
+/* ============================================================
+   GYMS (Modo aventura - mapa de ginásios)
+   ============================================================ */
+
+.gyms-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.gym-card {
+  background: white;
+  border: 3px solid var(--gray-border);
+  border-radius: 12px;
+  padding: 8px;
+  text-align: center;
+  font-size: 11px;
+  position: relative;
+}
+
+.gym-card.mastered {
+  border-color: var(--green);
+  background: #D1FAE5;
+}
+
+.gym-card .gym-table {
+  font-family: 'Fredoka One', cursive;
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.gym-card .gym-status {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+  font-weight: 700;
+}
+
+.gym-card.mastered .gym-status {
+  color: var(--green);
+}
+
+.gym-card .gym-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 18px;
+}
+
+/* ============================================================
+   MUTE/SOUND TOGGLE & POKEDEX MODAL Z-INDEX
+   ============================================================ */
+
+.overlay.pokemon-detail {
+  z-index: 200;
+}
+
+/* Toast (combo notification) */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 24px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 18px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  z-index: 300;
+  opacity: 0;
+  transition: all 0.4s ease-out;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
 </style>
 </head>
 <body>
-
+<!-- ============================================================
+     MAIN APP LAYOUT
+     ============================================================ -->
 <div class="app" id="app">
+
   <!-- MAIN GAME PANEL -->
   <div class="main">
     <div class="header">
@@ -560,12 +1250,16 @@
         <span class="title-icon"></span>
         Tabuada Pokémon
       </h1>
+      <div class="header-controls">
+        <button class="icon-btn" id="muteBtn" title="Som">🔊</button>
+        <button class="icon-btn" id="homeBtn" title="Início">🏠</button>
+      </div>
     </div>
 
     <div class="stats">
       <div class="stat progress">
         <div class="stat-label">Conta</div>
-        <div class="stat-value"><span id="current">1</span> / 40</div>
+        <div class="stat-value"><span id="current">1</span> / <span id="total">40</span></div>
       </div>
       <div class="stat score">
         <div class="stat-label">Acertos</div>
@@ -573,7 +1267,11 @@
       </div>
       <div class="stat errors">
         <div class="stat-label">Erros</div>
-        <div class="stat-value"><span id="errors">0</span> / 10</div>
+        <div class="stat-value"><span id="errors">0</span> / <span id="maxErrors">10</span></div>
+      </div>
+      <div class="stat streak" id="streakStat">
+        <div class="stat-label">Combo</div>
+        <div class="stat-value">🔥 <span id="streak">0</span></div>
       </div>
     </div>
 
@@ -582,13 +1280,22 @@
     </div>
 
     <div class="question-area">
-      <img class="pokemon-sprite" id="pokemonSprite" src="" alt="">
+      <div class="pokemon-sprite-wrap">
+        <img class="pokemon-sprite" id="pokemonSprite" src="" alt="">
+        <svg class="pokeball-anim" id="pokeballAnim" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="#fff" stroke="#000" stroke-width="4"/>
+          <path d="M 5 50 A 45 45 0 0 1 95 50 Z" fill="#DC2626" stroke="#000" stroke-width="4"/>
+          <rect x="5" y="48" width="90" height="6" fill="#000"/>
+          <circle cx="50" cy="50" r="12" fill="#fff" stroke="#000" stroke-width="4"/>
+          <circle cx="50" cy="50" r="5" fill="#fff" stroke="#000" stroke-width="3"/>
+        </svg>
+      </div>
       <div class="pokemon-name" id="pokemonName">
         <span id="pokemonNameText">Bulbasaur</span>
         <span class="num" id="pokemonNum">#001</span>
         <span class="shiny-tag" id="shinyTag" style="display:none;">✨ SHINY</span>
       </div>
-      <div class="pokemon-sub">Um Pokémon selvagem apareceu!</div>
+      <div class="pokemon-types" id="pokemonTypes"></div>
       <div class="question display" id="question">— x — = ?</div>
     </div>
 
@@ -607,43 +1314,77 @@
     <div class="feedback empty" id="feedback">&nbsp;</div>
   </div>
 
-  <!-- SIDEBAR / POKEDEX -->
+  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-title">📕 Pokédex</div>
     <div class="sidebar-sub">
       <span id="pokedexCount">0</span> / 151 capturados
     </div>
     <div class="pokedex-grid" id="pokedexGrid"></div>
+
+    <div class="badges">
+      <div class="badges-title">🏅 Medalhas</div>
+      <div class="badges-grid" id="badgesGrid"></div>
+    </div>
+
     <div class="best-score">
       <div class="best-score-label">🏆 Melhor Resultado</div>
       <div class="best-score-value"><span id="bestScore">0</span> / 40</div>
     </div>
+
+    <button class="btn gray" style="width: 100%; margin-top: 12px; height: 44px; font-size: 14px;" id="teacherModeBtn">
+      👨‍🏫 Modo Professor
+    </button>
   </div>
 </div>
 
-<!-- START SCREEN -->
+<!-- ============================================================
+     START SCREEN
+     ============================================================ -->
 <div class="overlay" id="startOverlay">
   <div class="modal">
     <img class="modal-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="Pikachu">
     <h2 class="modal-title">Tabuada Pokémon!</h2>
-    <p class="modal-subtitle">Vamos capturar todos os Pokémons da 1ª Geração!</p>
-    <div class="modal-rules">
-      <strong>Como jogar:</strong>
+    <p class="modal-subtitle">Escolha como você quer treinar hoje, Sofia!</p>
+
+    <div class="mode-grid">
+      <div class="mode-card selected" data-mode="adventure" id="modeAdventure">
+        <div class="mode-card-icon">🗺️</div>
+        <div class="mode-card-title">Aventura</div>
+        <div class="mode-card-desc">40 contas, 10 erros = Game Over</div>
+      </div>
+      <div class="mode-card" data-mode="training" id="modeTraining">
+        <div class="mode-card-icon">🏋️</div>
+        <div class="mode-card-title">Treino Livre</div>
+        <div class="mode-card-desc">Escolha uma tabuada, sem game over</div>
+      </div>
+    </div>
+
+    <div class="table-picker" id="tablePicker">
+      <div class="table-picker-label">Escolha a tabuada:</div>
+      <div class="table-buttons" id="tableButtons"></div>
+    </div>
+
+    <div class="modal-rules" id="modeRules">
+      <strong>Modo Aventura:</strong>
       <ul>
         <li>São <strong>40 contas</strong> de tabuada (1 a 9)</li>
         <li>Acertou? <strong>Capturou o Pokémon!</strong></li>
         <li>Errou <strong>10 vezes</strong>? Game Over!</li>
-        <li>Pokémons brilhantes (✨ shiny) são raríssimos!</li>
+        <li>Combos de acertos aumentam a chance de ✨ shiny</li>
       </ul>
     </div>
+
     <button class="btn" id="startBtn" style="width: 100%;">Começar Aventura!</button>
   </div>
 </div>
 
-<!-- GAME OVER SCREEN -->
+<!-- ============================================================
+     GAME OVER SCREEN (com gráfico de erros)
+     ============================================================ -->
 <div class="overlay" id="gameOverOverlay" style="display:none;">
   <div class="modal">
-    <img class="modal-sprite fainted" id="faintedSprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="Pokémon desmaiado">
+    <img class="modal-sprite fainted" id="faintedSprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="">
     <h2 class="modal-title">Seus Pokémons desmaiaram! 😵</h2>
     <p class="modal-subtitle">Volte ao Centro Pokémon e tente novamente!</p>
     <div class="modal-stats">
@@ -652,38 +1393,203 @@
         <div class="modal-stat-value" id="goCorrect">0</div>
       </div>
       <div>
-        <div class="modal-stat-label">Erros</div>
-        <div class="modal-stat-value" id="goErrors">10</div>
+        <div class="modal-stat-label">Tempo Médio</div>
+        <div class="modal-stat-value" id="goTime">—</div>
       </div>
     </div>
+    <div class="result-chart">
+      <div class="result-chart-title">Onde você errou esta sessão</div>
+      <div id="goChart"></div>
+    </div>
     <button class="btn" id="restartBtn" style="width: 100%;">Tentar de Novo</button>
+    <button class="btn gray" id="goHomeBtn" style="width: 100%; margin-top: 8px;">Voltar ao Menu</button>
   </div>
 </div>
 
-<!-- VICTORY SCREEN -->
+<!-- ============================================================
+     VICTORY SCREEN
+     ============================================================ -->
 <div class="overlay" id="victoryOverlay" style="display:none;">
   <div class="modal">
     <img class="modal-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png" alt="Mewtwo">
     <h2 class="modal-title">🏆 Mestre Pokémon!</h2>
-    <p class="modal-subtitle">Sofia, você é incrível! Completou todas as 40 capturas!</p>
+    <p class="modal-subtitle">Sofia, você é incrível! Completou todas as capturas!</p>
     <div class="modal-stats">
       <div>
         <div class="modal-stat-label">Acertos</div>
         <div class="modal-stat-value" id="vCorrect">40</div>
       </div>
       <div>
-        <div class="modal-stat-label">Erros</div>
-        <div class="modal-stat-value" id="vErrors">0</div>
+        <div class="modal-stat-label">Tempo Médio</div>
+        <div class="modal-stat-value" id="vTime">—</div>
       </div>
     </div>
+    <div class="result-chart">
+      <div class="result-chart-title">Resumo da sessão</div>
+      <div id="vChart"></div>
+    </div>
     <button class="btn" id="victoryBtn" style="width: 100%;">Nova Aventura</button>
+    <button class="btn gray" id="vHomeBtn" style="width: 100%; margin-top: 8px;">Voltar ao Menu</button>
   </div>
 </div>
 
+<!-- ============================================================
+     TRAINING COMPLETE (modo treino livre, sem game over)
+     ============================================================ -->
+<div class="overlay" id="trainingDoneOverlay" style="display:none;">
+  <div class="modal">
+    <img class="modal-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png" alt="Alakazam">
+    <h2 class="modal-title">Treino concluído!</h2>
+    <p class="modal-subtitle">Você completou seu treino livre.</p>
+    <div class="modal-stats">
+      <div>
+        <div class="modal-stat-label">Acertos</div>
+        <div class="modal-stat-value" id="tCorrect">0</div>
+      </div>
+      <div>
+        <div class="modal-stat-label">Erros</div>
+        <div class="modal-stat-value" id="tErrors">0</div>
+      </div>
+    </div>
+    <div class="result-chart">
+      <div class="result-chart-title">Resumo</div>
+      <div id="tChart"></div>
+    </div>
+    <button class="btn" id="trainingDoneBtn" style="width: 100%;">Voltar ao Menu</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     POKEMON INFO MODAL (clicar num card)
+     ============================================================ -->
+<div class="overlay pokemon-detail" id="pokemonDetailOverlay" style="display:none;">
+  <div class="modal" style="border-color: var(--blue); max-width: 440px;">
+    <div class="poke-modal-header">
+      <div class="poke-modal-num" id="pdNum">#001</div>
+      <button class="poke-modal-close" id="pdClose">✕</button>
+    </div>
+    <img class="modal-sprite" id="pdSprite" src="" alt="" style="margin-top: 0;">
+    <div class="poke-modal-name" id="pdName">—</div>
+    <div class="pokemon-types" id="pdTypes" style="margin-bottom: 8px;"></div>
+    <div class="poke-modal-desc" id="pdDesc">
+      <span class="loading-spinner"></span> Carregando informações...
+    </div>
+    <div class="poke-modal-data">
+      <div class="poke-data-item">
+        <div class="poke-data-label">Altura</div>
+        <div class="poke-data-value" id="pdHeight">—</div>
+      </div>
+      <div class="poke-data-item">
+        <div class="poke-data-label">Peso</div>
+        <div class="poke-data-value" id="pdWeight">—</div>
+      </div>
+    </div>
+    <button class="btn blue" id="pdCryBtn" style="width: 100%; margin-top: 14px; height: 48px; font-size: 16px;">
+      🔊 Ouvir grito
+    </button>
+  </div>
+</div>
+
+<!-- ============================================================
+     TEACHER MODE - PASSWORD
+     ============================================================ -->
+<div class="overlay" id="teacherPwOverlay" style="display:none;">
+  <div class="modal" style="border-color: var(--purple); max-width: 380px;">
+    <h2 class="modal-title" style="color: var(--purple);">👨‍🏫 Modo Professor</h2>
+    <p class="modal-subtitle">Digite a senha para acessar.</p>
+    <input type="password" class="password-input" id="teacherPwInput" placeholder="Senha">
+    <div style="display: flex; gap: 8px; margin-top: 16px;">
+      <button class="btn gray" id="teacherPwCancel" style="flex: 1;">Cancelar</button>
+      <button class="btn blue" id="teacherPwOk" style="flex: 1;">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     TEACHER MODE - PANEL
+     ============================================================ -->
+<div class="overlay" id="teacherOverlay" style="display:none;">
+  <div class="modal" style="border-color: var(--purple); max-width: 560px;">
+    <h2 class="modal-title" style="color: var(--purple);">📊 Painel do Professor</h2>
+
+    <div class="teacher-tabs">
+      <button class="teacher-tab active" data-tab="stats">Estatísticas</button>
+      <button class="teacher-tab" data-tab="data">Dados</button>
+    </div>
+
+    <div class="teacher-panel" id="teacherStats">
+      <div class="teacher-section">
+        <h4>Resumo Geral</h4>
+        <div class="teacher-stat-grid">
+          <div class="poke-data-item">
+            <div class="poke-data-label">Sessões</div>
+            <div class="poke-data-value" id="tmSessions">0</div>
+          </div>
+          <div class="poke-data-item">
+            <div class="poke-data-label">Total respostas</div>
+            <div class="poke-data-value" id="tmTotal">0</div>
+          </div>
+          <div class="poke-data-item">
+            <div class="poke-data-label">Taxa de acerto</div>
+            <div class="poke-data-value" id="tmAccuracy">—</div>
+          </div>
+          <div class="poke-data-item">
+            <div class="poke-data-label">Tempo médio</div>
+            <div class="poke-data-value" id="tmAvgTime">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="teacher-section">
+        <h4>Acertos por Tabuada (histórico)</h4>
+        <div class="result-chart" style="background: transparent; padding: 0;">
+          <div id="tmTablesChart"></div>
+        </div>
+      </div>
+
+      <div class="teacher-section">
+        <h4>Últimas 5 Sessões</h4>
+        <div id="tmSessionList" style="font-size: 13px;"></div>
+      </div>
+    </div>
+
+    <div class="teacher-panel hidden" id="teacherData">
+      <div class="teacher-section">
+        <h4>Gerenciar dados</h4>
+        <div class="teacher-action-row">
+          <button class="btn blue" id="tmExportBtn" style="height: 44px; font-size: 14px;">📥 Exportar progresso</button>
+          <button class="btn blue" id="tmImportBtn" style="height: 44px; font-size: 14px;">📤 Importar progresso</button>
+          <input type="file" id="tmImportFile" accept=".json" style="display:none;">
+          <button class="btn" style="background: #DC2626; box-shadow: 0 4px 0 #991B1B; height: 44px; font-size: 14px;" id="tmResetBtn">🗑️ Resetar Pokédex</button>
+          <div class="confirm-text" id="tmResetConfirm">
+            <strong>Tem certeza?</strong> Isso vai apagar TODA a Pokédex e estatísticas. Não dá pra desfazer.
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <button class="btn gray" id="tmResetCancel" style="flex: 1; height: 36px; font-size: 12px;">Cancelar</button>
+              <button class="btn" id="tmResetYes" style="flex: 1; height: 36px; font-size: 12px; background: #DC2626; box-shadow: 0 4px 0 #991B1B;">Sim, apagar tudo</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn gray" id="teacherClose" style="width: 100%; margin-top: 16px;">Fechar</button>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast">—</div>
+
 <script>
 // ============================================================
-//  TABUADA POKÉMON - lógica do jogo
+//  TABUADA POKÉMON v3 - JAVASCRIPT
 // ============================================================
+
+// --- Constants ---
+const TEACHER_PW = '2026SF';
+const SHINY_CHANCE_BASE = 0.05;
+const SHINY_CHANCE_COMBO_BONUS = 0.02; // por nível de combo (max +0.10)
+const SHINY_CHANCE_MAX = 0.25;
+const STORAGE_KEY = 'tabuadaPokemon_v3';
 
 // --- Lista hardcoded dos 151 Pokémons da Gen 1 ---
 const POKEDEX = [
@@ -715,49 +1621,26 @@ const POKEDEX = [
   "Mew"
 ];
 
-const SHINY_CHANCE = 0.08; // 8% chance
+// --- Badges definitions ---
+const BADGES = [
+  { id: 'first',     icon: '🌱', name: 'Primeiro Pokémon',    desc: '1º Pokémon capturado' },
+  { id: 'ten',       icon: '🎒', name: 'Treinadora Iniciante', desc: '10 Pokémons capturados' },
+  { id: 'thirty',    icon: '⭐', name: 'Boa Treinadora',       desc: '30 Pokémons capturados' },
+  { id: 'fifty',     icon: '🏆', name: 'Professora Oak Jr.',   desc: '50 Pokémons capturados' },
+  { id: 'hundred',   icon: '👑', name: 'Veterana',             desc: '100 Pokémons capturados' },
+  { id: 'allcaught', icon: '🌟', name: 'Pokédex Completa',     desc: 'Todos os 151!' },
+  { id: 'shiny1',    icon: '✨', name: 'Primeiro Shiny',       desc: '1º Pokémon Shiny' },
+  { id: 'master',    icon: '🎓', name: 'Mestre da Tabuada',    desc: 'Completou Aventura sem erros' },
+];
 
 // --- Helpers ---
-function pad3(n) {
-  return String(n).padStart(3, '0');
-}
-function getPokemonName(id) {
-  return POKEDEX[id - 1] || `Pokémon #${pad3(id)}`;
-}
-function getPokemonSpriteUrl(id, shiny = false) {
+function pad3(n) { return String(n).padStart(3, '0'); }
+function getPokemonName(id) { return POKEDEX[id - 1] || `Pokémon #${pad3(id)}`; }
+function getPokemonSpriteUrl(id, shiny) {
   const base = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
   return shiny ? `${base}/shiny/${id}.png` : `${base}/${id}.png`;
 }
 
-// --- Estado persistente (localStorage) ---
-function loadState() {
-  try {
-    const raw = localStorage.getItem('tabuadaPokemon_v2');
-    if (!raw) return { bestScore: 0, pokedex: {}, errorMap: {} };
-    return JSON.parse(raw);
-  } catch (e) {
-    return { bestScore: 0, pokedex: {}, errorMap: {} };
-  }
-}
-function saveState() {
-  try {
-    localStorage.setItem('tabuadaPokemon_v2', JSON.stringify(persistent));
-  } catch (e) {}
-}
-let persistent = loadState();
-
-// --- Estado da partida ---
-let session = {
-  questions: [],
-  currentIdx: 0,
-  correct: 0,
-  errors: 0,
-  currentPokemonId: null,
-  currentIsShiny: false,
-  awaiting: false,
-};
-
-// --- Geração de contas ---
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -767,7 +1650,230 @@ function shuffle(arr) {
   return a;
 }
 
+// --- Estado persistente ---
+function defaultState() {
+  return {
+    bestScore: 0,
+    pokedex: {},        // { id: { id, shiny } }
+    errorMap: {},       // { table: errorCount } - lifetime errors per multiplication table
+    successMap: {},     // { table: successCount }
+    badges: {},         // { badgeId: true }
+    pokemonCache: {},   // { id: { types, height, weight, description, cryUrl } } - cached PokéAPI data
+    settings: { muted: false },
+    sessions: [],       // { date, mode, table?, correct, errors, total, avgTime, errorTables: [] }
+    totalQuestions: 0,
+    totalCorrect: 0,
+    totalTimeMs: 0,
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const parsed = JSON.parse(raw);
+    return { ...defaultState(), ...parsed };
+  } catch (e) {
+    return defaultState();
+  }
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(persistent)); }
+  catch (e) {}
+}
+
+let persistent = loadState();
+
+// --- Session state ---
+let session = null;
+
+function newSession(mode, tableFilter = null) {
+  return {
+    mode, // 'adventure' | 'training'
+    tableFilter, // null or 1-9 (for training mode)
+    questions: [],
+    currentIdx: 0,
+    correct: 0,
+    errors: 0,
+    streak: 0,
+    maxStreak: 0,
+    currentPokemonId: null,
+    currentIsShiny: false,
+    awaiting: false,
+    questionStartTime: 0,
+    totalAnswerTimeMs: 0,
+    answeredCount: 0,
+    errorTables: {}, // { table: count } - only this session
+    successTables: {},
+  };
+}
+
+// ============================================================
+//  AUDIO (Web Audio API - generated tones, 100% offline)
+// ============================================================
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch (e) { return null; }
+  }
+  // Resume if suspended (mobile policy)
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq, durationMs, type = 'sine', volume = 0.15) {
+  if (persistent.settings.muted) return;
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(volume, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + durationMs / 1000);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + durationMs / 1000);
+}
+
+function soundCorrect() {
+  // ascending arpeggio
+  playTone(523, 100, 'square', 0.12); // C5
+  setTimeout(() => playTone(659, 100, 'square', 0.12), 80);  // E5
+  setTimeout(() => playTone(784, 180, 'square', 0.12), 160); // G5
+}
+
+function soundWrong() {
+  // descending sad
+  playTone(330, 200, 'sawtooth', 0.10);
+  setTimeout(() => playTone(220, 250, 'sawtooth', 0.10), 150);
+}
+
+function soundShiny() {
+  // bright sparkle
+  [880, 1175, 1568, 2093].forEach((f, i) => {
+    setTimeout(() => playTone(f, 120, 'triangle', 0.10), i * 70);
+  });
+}
+
+function soundCombo() {
+  playTone(659, 80, 'square', 0.12);
+  setTimeout(() => playTone(880, 80, 'square', 0.12), 60);
+}
+
+function soundGameOver() {
+  [392, 370, 349, 330].forEach((f, i) => {
+    setTimeout(() => playTone(f, 250, 'sawtooth', 0.12), i * 200);
+  });
+}
+
+function soundVictory() {
+  [523, 659, 784, 1047].forEach((f, i) => {
+    setTimeout(() => playTone(f, 200, 'square', 0.12), i * 150);
+  });
+}
+
+// Play actual Pokémon cry (PokéAPI MP3)
+let cryAudio = null;
+function playCry(pokemonId) {
+  if (persistent.settings.muted) return;
+  if (cryAudio) { cryAudio.pause(); cryAudio = null; }
+  // PokéAPI provides cries at https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/{id}.ogg
+  // Some browsers don't play .ogg; try a known-working source.
+  const url = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/${pokemonId}.ogg`;
+  cryAudio = new Audio(url);
+  cryAudio.volume = 0.4;
+  cryAudio.play().catch(() => {
+    // fallback to silence if blocked or unavailable
+  });
+}
+
+// ============================================================
+//  POKÉAPI - fetch + cache
+// ============================================================
+
+const TYPE_COLORS = {
+  normal:'--type-normal', fire:'--type-fire', water:'--type-water',
+  electric:'--type-electric', grass:'--type-grass', ice:'--type-ice',
+  fighting:'--type-fighting', poison:'--type-poison', ground:'--type-ground',
+  flying:'--type-flying', psychic:'--type-psychic', bug:'--type-bug',
+  rock:'--type-rock', ghost:'--type-ghost', dragon:'--type-dragon',
+  fairy:'--type-fairy', steel:'--type-steel', dark:'--type-dark',
+};
+
+const TYPE_NAMES_PT = {
+  normal:'Normal', fire:'Fogo', water:'Água', electric:'Elétrico',
+  grass:'Planta', ice:'Gelo', fighting:'Lutador', poison:'Veneno',
+  ground:'Terra', flying:'Voador', psychic:'Psíquico', bug:'Inseto',
+  rock:'Pedra', ghost:'Fantasma', dragon:'Dragão', fairy:'Fada',
+  steel:'Aço', dark:'Sombrio',
+};
+
+async function fetchPokemonData(id) {
+  // Check cache first
+  if (persistent.pokemonCache[id]) {
+    return persistent.pokemonCache[id];
+  }
+
+  try {
+    // Fetch both endpoints in parallel
+    const [pokeRes, speciesRes] = await Promise.all([
+      fetch(`https://pokeapi.co/api/v2/pokemon/${id}`),
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`)
+    ]);
+
+    if (!pokeRes.ok || !speciesRes.ok) throw new Error('API error');
+
+    const poke = await pokeRes.json();
+    const species = await speciesRes.json();
+
+    const types = poke.types.map(t => t.type.name);
+    const heightM = poke.height / 10; // decimeters -> meters
+    const weightKg = poke.weight / 10; // hectograms -> kg
+
+    // English flavor text (cleaner & shorter than PT)
+    const flavorEntries = species.flavor_text_entries || [];
+    const enEntry = flavorEntries.find(e => e.language.name === 'en');
+    let description = enEntry ? enEntry.flavor_text : '';
+    description = description.replace(/[\f\n\r]/g, ' ').replace(/\s+/g, ' ').trim();
+
+    const data = {
+      types,
+      heightM,
+      weightKg,
+      description,
+    };
+
+    persistent.pokemonCache[id] = data;
+    saveState();
+    return data;
+  } catch (e) {
+    return null;
+  }
+}
+
+function renderTypeBadges(container, types) {
+  container.innerHTML = '';
+  if (!types || types.length === 0) return;
+  types.forEach(t => {
+    const badge = document.createElement('span');
+    badge.className = 'type-badge';
+    const colorVar = TYPE_COLORS[t] || '--type-normal';
+    badge.style.background = `var(${colorVar})`;
+    badge.textContent = TYPE_NAMES_PT[t] || t;
+    container.appendChild(badge);
+  });
+}
+
+// ============================================================
+//  QUESTION GENERATION
+// ============================================================
+
 function getWeightedTables() {
+  // Lifetime errors give weight, capped at 5
   const pool = [];
   for (let t = 1; t <= 9; t++) {
     const errCount = persistent.errorMap[t] || 0;
@@ -782,119 +1888,150 @@ function pickWeightedTable() {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-function generateQuestions() {
-  const questions = [];
-
-  // 30 multiplicações
+function generateAdventureQuestions() {
+  const qs = [];
+  // 30 multiplications
   for (let i = 0; i < 30; i++) {
     const a = pickWeightedTable();
     const b = Math.floor(Math.random() * 9) + 1;
-    questions.push({ type: 'mul', a, b, answer: a * b });
+    qs.push({ type: 'mul', a, b, answer: a * b, table: a });
   }
-
-  // 10 divisões exatas
+  // 10 divisions
   for (let i = 0; i < 10; i++) {
     const a = pickWeightedTable();
     const b = Math.floor(Math.random() * 9) + 1;
-    const product = a * b;
-    questions.push({ type: 'div', a: product, b: a, answer: b });
+    qs.push({ type: 'div', a: a * b, b: a, answer: b, table: a });
   }
-
-  return shuffle(questions);
+  return shuffle(qs);
 }
 
-// --- Escolha de Pokémon (sem repetir, exceto shinys) ---
-function pickPokemonForEncounter() {
-  // Decide se é shiny primeiro
-  const isShiny = Math.random() < SHINY_CHANCE;
+function generateTrainingQuestions(table) {
+  // 20 contas focadas só nessa tabuada (mix mul/div)
+  const qs = [];
+  for (let i = 0; i < 14; i++) {
+    const b = Math.floor(Math.random() * 9) + 1;
+    qs.push({ type: 'mul', a: table, b, answer: table * b, table });
+  }
+  for (let i = 0; i < 6; i++) {
+    const b = Math.floor(Math.random() * 9) + 1;
+    qs.push({ type: 'div', a: table * b, b: table, answer: b, table });
+  }
+  return shuffle(qs);
+}
 
-  // Lista de Pokémons já capturados (não shiny conta como possuído)
-  const alreadyCaught = new Set(
-    Object.keys(persistent.pokedex).map(Number)
-  );
+// ============================================================
+//  POKEMON ENCOUNTER LOGIC
+// ============================================================
+
+function getCurrentShinyChance() {
+  // Streak boosts shiny chance, up to a cap
+  if (!session) return SHINY_CHANCE_BASE;
+  const boost = Math.min(session.streak, 5) * SHINY_CHANCE_COMBO_BONUS;
+  return Math.min(SHINY_CHANCE_MAX, SHINY_CHANCE_BASE + boost);
+}
+
+function pickPokemonForEncounter() {
+  const isShiny = Math.random() < getCurrentShinyChance();
+  const caught = new Set(Object.keys(persistent.pokedex).map(Number));
 
   if (isShiny) {
-    // Shiny pode aparecer mesmo se já tem o normal
-    // Mas se já tem o shiny dele, sorteia outro
     const shinyCaught = new Set(
       Object.entries(persistent.pokedex)
         .filter(([_, v]) => v.shiny)
         .map(([k]) => Number(k))
     );
-    const available = [];
+    const avail = [];
     for (let i = 1; i <= 151; i++) {
-      if (!shinyCaught.has(i)) available.push(i);
+      if (!shinyCaught.has(i)) avail.push(i);
     }
-    if (available.length === 0) {
-      // Tudo capturado em shiny — aparece um qualquer
+    if (avail.length === 0) {
       return { id: Math.floor(Math.random() * 151) + 1, shiny: true };
     }
-    return { id: available[Math.floor(Math.random() * available.length)], shiny: true };
+    return { id: avail[Math.floor(Math.random() * avail.length)], shiny: true };
   }
 
-  // Normal: sorteia entre os não capturados
-  const available = [];
+  const avail = [];
   for (let i = 1; i <= 151; i++) {
-    if (!alreadyCaught.has(i)) available.push(i);
+    if (!caught.has(i)) avail.push(i);
   }
-  if (available.length === 0) {
-    // Pokédex completa — qualquer um (não persiste mudança)
+  if (avail.length === 0) {
     return { id: Math.floor(Math.random() * 151) + 1, shiny: false };
   }
-  return { id: available[Math.floor(Math.random() * available.length)], shiny: false };
+  return { id: avail[Math.floor(Math.random() * avail.length)], shiny: false };
 }
 
-// --- Renderização ---
+// ============================================================
+//  RENDER FUNCTIONS
+// ============================================================
+
+function $(id) { return document.getElementById(id); }
+
 function renderQuestion() {
+  if (!session) return;
   const q = session.questions[session.currentIdx];
   if (!q) return;
 
   const symbol = q.type === 'mul' ? '×' : '÷';
-  document.getElementById('question').textContent = `${q.a} ${symbol} ${q.b}`;
+  $('question').textContent = `${q.a} ${symbol} ${q.b}`;
 
-  // Pokémon novo para esta conta
-  const encounter = pickPokemonForEncounter();
-  session.currentPokemonId = encounter.id;
-  session.currentIsShiny = encounter.shiny;
+  const enc = pickPokemonForEncounter();
+  session.currentPokemonId = enc.id;
+  session.currentIsShiny = enc.shiny;
 
-  const sprite = document.getElementById('pokemonSprite');
-  sprite.src = getPokemonSpriteUrl(session.currentPokemonId, session.currentIsShiny);
-  sprite.alt = getPokemonName(session.currentPokemonId);
+  const sprite = $('pokemonSprite');
+  sprite.src = getPokemonSpriteUrl(enc.id, enc.shiny);
+  sprite.alt = getPokemonName(enc.id);
 
-  document.getElementById('pokemonNameText').textContent =
-    getPokemonName(session.currentPokemonId);
-  document.getElementById('pokemonNum').textContent =
-    '#' + pad3(session.currentPokemonId);
-  document.getElementById('shinyTag').style.display =
-    session.currentIsShiny ? 'inline-block' : 'none';
+  $('pokemonNameText').textContent = getPokemonName(enc.id);
+  $('pokemonNum').textContent = '#' + pad3(enc.id);
+  $('shinyTag').style.display = enc.shiny ? 'inline-block' : 'none';
 
-  document.getElementById('current').textContent = session.currentIdx + 1;
-  document.getElementById('correct').textContent = session.correct;
-  document.getElementById('errors').textContent = session.errors;
+  // Fetch types in background and render badges
+  const typesContainer = $('pokemonTypes');
+  typesContainer.innerHTML = '';
+  fetchPokemonData(enc.id).then(data => {
+    // Make sure we're still showing this Pokémon
+    if (session && session.currentPokemonId === enc.id) {
+      renderTypeBadges(typesContainer, data ? data.types : []);
+    }
+  });
 
-  const pct = (session.currentIdx / 40) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
+  $('current').textContent = session.currentIdx + 1;
+  $('total').textContent = session.questions.length;
+  $('correct').textContent = session.correct;
+  $('errors').textContent = session.errors;
+  $('maxErrors').textContent = session.mode === 'adventure' ? 10 : '∞';
+  $('streak').textContent = session.streak;
 
-  const input = document.getElementById('answer');
+  const streakStat = $('streakStat');
+  if (session.streak >= 5) streakStat.classList.add('hot');
+  else streakStat.classList.remove('hot');
+
+  const pct = (session.currentIdx / session.questions.length) * 100;
+  $('progressFill').style.width = pct + '%';
+
+  const input = $('answer');
   input.value = '';
   input.disabled = false;
-  document.getElementById('submitBtn').disabled = false;
-  input.focus();
+  $('submitBtn').disabled = false;
+  setTimeout(() => input.focus(), 50);
 
-  const fb = document.getElementById('feedback');
+  const fb = $('feedback');
   fb.className = 'feedback empty';
   fb.innerHTML = '&nbsp;';
+
+  session.questionStartTime = performance.now();
 }
 
 function renderPokedex() {
-  const grid = document.getElementById('pokedexGrid');
+  const grid = $('pokedexGrid');
   grid.innerHTML = '';
 
-  let capturedCount = 0;
-
+  let count = 0;
   for (let i = 1; i <= 151; i++) {
     const div = document.createElement('div');
     div.className = 'pokedex-slot';
+    div.dataset.id = i;
 
     const numEl = document.createElement('div');
     numEl.className = 'num';
@@ -911,7 +2048,7 @@ function renderPokedex() {
 
     const captured = persistent.pokedex[i];
     if (captured) {
-      capturedCount++;
+      count++;
       div.classList.add('captured');
       if (captured.shiny) div.classList.add('shiny');
 
@@ -926,72 +2063,215 @@ function renderPokedex() {
       q.className = 'placeholder-q';
       q.textContent = '?';
       imgWrap.appendChild(q);
-
       pname.textContent = '???';
     }
 
     grid.appendChild(div);
   }
 
-  document.getElementById('pokedexCount').textContent = capturedCount;
-  document.getElementById('bestScore').textContent = persistent.bestScore;
+  $('pokedexCount').textContent = count;
+  $('bestScore').textContent = persistent.bestScore;
 }
 
-// --- Fluxo de resposta ---
-function checkAnswer() {
-  if (session.awaiting) return;
+function renderBadges() {
+  const grid = $('badgesGrid');
+  grid.innerHTML = '';
+  BADGES.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'badge';
+    if (persistent.badges[b.id]) el.classList.add('earned');
+    el.textContent = b.icon;
+    const tip = document.createElement('div');
+    tip.className = 'badge-tooltip';
+    tip.textContent = b.name;
+    el.appendChild(tip);
+    el.title = b.name + ' - ' + b.desc;
+    grid.appendChild(el);
+  });
+}
 
-  const input = document.getElementById('answer');
-  const val = parseInt(input.value, 10);
-  if (isNaN(val)) {
-    input.focus();
-    return;
+function renderResultChart(containerId, perTableMap, totalQuestionsMap) {
+  const container = $(containerId);
+  container.innerHTML = '';
+  for (let t = 1; t <= 9; t++) {
+    const errors = perTableMap[t] || 0;
+    const total = totalQuestionsMap[t] || 0;
+    if (total === 0) continue;
+    const pct = total > 0 ? (errors / total) * 100 : 0;
+
+    const row = document.createElement('div');
+    row.className = 'result-chart-row';
+
+    const label = document.createElement('div');
+    label.className = 'result-chart-label';
+    label.textContent = 'x' + t;
+    row.appendChild(label);
+
+    const bar = document.createElement('div');
+    bar.className = 'result-chart-bar';
+    const fill = document.createElement('div');
+    fill.className = 'result-chart-fill';
+    if (errors === 0) fill.classList.add('no-errors');
+    fill.style.width = (errors === 0 ? 8 : pct) + '%';
+    bar.appendChild(fill);
+    row.appendChild(bar);
+
+    const count = document.createElement('div');
+    count.className = 'result-chart-count';
+    if (errors === 0) count.classList.add('zero');
+    count.textContent = errors + '/' + total;
+    row.appendChild(count);
+
+    container.appendChild(row);
   }
+  if (!container.children.length) {
+    container.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;">Sem dados.</div>';
+  }
+}
+
+// ============================================================
+//  TOASTS, ANIMATIONS, BADGES
+// ============================================================
+
+let toastTimeout = null;
+function showToast(text, duration = 2000) {
+  const t = $('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function playPokeballAnimation() {
+  const el = $('pokeballAnim');
+  el.classList.remove('animating');
+  void el.offsetWidth; // force reflow
+  el.classList.add('animating');
+  setTimeout(() => el.classList.remove('animating'), 1000);
+}
+
+function checkAndAwardBadges() {
+  const captured = Object.keys(persistent.pokedex).length;
+  const hasShiny = Object.values(persistent.pokedex).some(p => p.shiny);
+
+  const checks = [
+    ['first', captured >= 1],
+    ['ten', captured >= 10],
+    ['thirty', captured >= 30],
+    ['fifty', captured >= 50],
+    ['hundred', captured >= 100],
+    ['allcaught', captured >= 151],
+    ['shiny1', hasShiny],
+  ];
+
+  let newBadges = [];
+  checks.forEach(([id, condition]) => {
+    if (condition && !persistent.badges[id]) {
+      persistent.badges[id] = true;
+      const def = BADGES.find(b => b.id === id);
+      if (def) newBadges.push(def);
+    }
+  });
+
+  if (newBadges.length > 0) {
+    saveState();
+    // Show toast for first badge in queue
+    newBadges.forEach((b, i) => {
+      setTimeout(() => {
+        showToast(`🏅 Nova medalha: ${b.name}!`, 2500);
+      }, i * 800);
+    });
+  }
+}
+
+// ============================================================
+//  ANSWER FLOW
+// ============================================================
+
+function checkAnswer() {
+  if (!session || session.awaiting) return;
+
+  const input = $('answer');
+  const val = parseInt(input.value, 10);
+  if (isNaN(val)) { input.focus(); return; }
 
   const q = session.questions[session.currentIdx];
   const correct = val === q.answer;
-  const fb = document.getElementById('feedback');
+  const elapsedMs = performance.now() - session.questionStartTime;
+  session.totalAnswerTimeMs += elapsedMs;
+  session.answeredCount++;
 
+  // Track lifetime stats
+  persistent.totalQuestions = (persistent.totalQuestions || 0) + 1;
+  persistent.totalTimeMs = (persistent.totalTimeMs || 0) + elapsedMs;
+
+  const fb = $('feedback');
   session.awaiting = true;
   input.disabled = true;
-  document.getElementById('submitBtn').disabled = true;
+  $('submitBtn').disabled = true;
 
   if (correct) {
     session.correct++;
+    session.streak++;
+    session.maxStreak = Math.max(session.maxStreak, session.streak);
 
+    persistent.totalCorrect = (persistent.totalCorrect || 0) + 1;
+    persistent.successMap[q.table] = (persistent.successMap[q.table] || 0) + 1;
+    session.successTables[q.table] = (session.successTables[q.table] || 0) + 1;
+
+    // Capture pokemon
     const pid = session.currentPokemonId;
     const isShiny = session.currentIsShiny;
     const existing = persistent.pokedex[pid];
     const isNewToDex = !existing || (isShiny && !existing.shiny);
-
     if (isNewToDex) {
       persistent.pokedex[pid] = { id: pid, shiny: isShiny };
     }
+
+    // Sound
+    if (isShiny) soundShiny();
+    else soundCorrect();
+
+    // Combo milestones
+    if (session.streak > 0 && session.streak % 5 === 0) {
+      showToast(`🔥 Combo x${session.streak}!`, 1500);
+      soundCombo();
+    }
+
+    // Pokeball animation
+    playPokeballAnimation();
 
     const shinyTxt = isShiny ? ' ✨ SHINY ✨' : '';
     fb.className = 'feedback correct';
     fb.innerHTML = `✅ Você capturou um <strong>${getPokemonName(pid)}</strong>${shinyTxt}!`;
 
     renderPokedex();
+    checkAndAwardBadges();
+    renderBadges();
     saveState();
 
-    setTimeout(() => {
-      advanceQuestion();
-    }, isShiny ? 1600 : 1000);
+    setTimeout(() => advanceQuestion(), isShiny ? 1700 : 1100);
   } else {
     session.errors++;
-    const tableKey = q.type === 'mul' ? q.a : q.b;
-    persistent.errorMap[tableKey] = (persistent.errorMap[tableKey] || 0) + 1;
+    session.streak = 0;
+
+    persistent.errorMap[q.table] = (persistent.errorMap[q.table] || 0) + 1;
+    session.errorTables[q.table] = (session.errorTables[q.table] || 0) + 1;
+
+    soundWrong();
 
     fb.className = 'feedback wrong';
     fb.innerHTML = `❌ Errado! A resposta era <strong>${q.answer}</strong>. O Pokémon fugiu!`;
 
-    document.getElementById('errors').textContent = session.errors;
+    $('errors').textContent = session.errors;
+    $('streak').textContent = 0;
+    $('streakStat').classList.remove('hot');
+
     saveState();
 
     setTimeout(() => {
-      if (session.errors >= 10) {
-        showGameOver();
+      if (session.mode === 'adventure' && session.errors >= 10) {
+        endGame('gameover');
       } else {
         advanceQuestion();
       }
@@ -1000,79 +2280,493 @@ function checkAnswer() {
 }
 
 function advanceQuestion() {
+  if (!session) return;
   session.awaiting = false;
   session.currentIdx++;
 
-  if (session.currentIdx >= 40) {
-    showVictory();
+  if (session.currentIdx >= session.questions.length) {
+    endGame(session.mode === 'adventure' ? 'victory' : 'training-done');
     return;
   }
-
   renderQuestion();
 }
 
-function showGameOver() {
-  document.getElementById('goCorrect').textContent = session.correct;
-  document.getElementById('goErrors').textContent = session.errors;
-  document.getElementById('faintedSprite').src =
-    getPokemonSpriteUrl(session.currentPokemonId || 25);
+function saveSessionRecord(outcome) {
+  if (!session) return;
+  const avgTime = session.answeredCount > 0
+    ? (session.totalAnswerTimeMs / session.answeredCount / 1000).toFixed(1)
+    : null;
 
-  if (session.correct > persistent.bestScore) {
-    persistent.bestScore = session.correct;
-    saveState();
-  }
-
-  document.getElementById('gameOverOverlay').style.display = 'flex';
-}
-
-function showVictory() {
-  document.getElementById('vCorrect').textContent = session.correct;
-  document.getElementById('vErrors').textContent = session.errors;
-
-  if (session.correct > persistent.bestScore) {
-    persistent.bestScore = session.correct;
-    saveState();
-  }
-
-  document.getElementById('victoryOverlay').style.display = 'flex';
-}
-
-function startNewSession() {
-  session = {
-    questions: generateQuestions(),
-    currentIdx: 0,
-    correct: 0,
-    errors: 0,
-    currentPokemonId: null,
-    currentIsShiny: false,
-    awaiting: false,
+  const record = {
+    date: new Date().toISOString(),
+    mode: session.mode,
+    tableFilter: session.tableFilter,
+    correct: session.correct,
+    errors: session.errors,
+    total: session.questions.length,
+    answered: session.answeredCount,
+    avgTime: avgTime,
+    maxStreak: session.maxStreak,
+    outcome,
   };
 
-  document.getElementById('startOverlay').style.display = 'none';
-  document.getElementById('gameOverOverlay').style.display = 'none';
-  document.getElementById('victoryOverlay').style.display = 'none';
-
-  document.getElementById('progressFill').style.width = '0%';
-
-  renderPokedex();
-  renderQuestion();
+  persistent.sessions = persistent.sessions || [];
+  persistent.sessions.unshift(record);
+  if (persistent.sessions.length > 50) persistent.sessions = persistent.sessions.slice(0, 50);
 }
 
-// --- Event listeners ---
-document.getElementById('submitBtn').addEventListener('click', checkAnswer);
-document.getElementById('answer').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    checkAnswer();
-  }
-});
-document.getElementById('startBtn').addEventListener('click', startNewSession);
-document.getElementById('restartBtn').addEventListener('click', startNewSession);
-document.getElementById('victoryBtn').addEventListener('click', startNewSession);
+function endGame(outcome) {
+  saveSessionRecord(outcome);
 
-// --- Inicialização ---
-renderPokedex();
-document.getElementById('bestScore').textContent = persistent.bestScore;
+  if (session.correct > persistent.bestScore && session.mode === 'adventure') {
+    persistent.bestScore = session.correct;
+  }
+
+  // Award "no errors" badge
+  if (outcome === 'victory' && session.errors === 0) {
+    if (!persistent.badges['master']) {
+      persistent.badges['master'] = true;
+      setTimeout(() => showToast('🎓 Nova medalha: Mestre da Tabuada!', 3000), 500);
+    }
+  }
+  saveState();
+  renderBadges();
+
+  const avgTimeStr = session.answeredCount > 0
+    ? (session.totalAnswerTimeMs / session.answeredCount / 1000).toFixed(1) + 's'
+    : '—';
+
+  // Build per-table total map for the chart
+  const totalsPerTable = {};
+  session.questions.slice(0, session.currentIdx + 1).forEach(q => {
+    totalsPerTable[q.table] = (totalsPerTable[q.table] || 0) + 1;
+  });
+
+  if (outcome === 'gameover') {
+    $('goCorrect').textContent = session.correct;
+    $('goTime').textContent = avgTimeStr;
+    $('faintedSprite').src = getPokemonSpriteUrl(session.currentPokemonId || 25);
+    renderResultChart('goChart', session.errorTables, totalsPerTable);
+    $('gameOverOverlay').style.display = 'flex';
+    soundGameOver();
+  } else if (outcome === 'victory') {
+    $('vCorrect').textContent = session.correct;
+    $('vTime').textContent = avgTimeStr;
+    renderResultChart('vChart', session.errorTables, totalsPerTable);
+    $('victoryOverlay').style.display = 'flex';
+    soundVictory();
+  } else {
+    // training-done
+    $('tCorrect').textContent = session.correct;
+    $('tErrors').textContent = session.errors;
+    renderResultChart('tChart', session.errorTables, totalsPerTable);
+    $('trainingDoneOverlay').style.display = 'flex';
+    soundVictory();
+  }
+
+  session = null;
+}
+
+function startSession(mode, tableFilter = null) {
+  const s = newSession(mode, tableFilter);
+  s.questions = mode === 'adventure'
+    ? generateAdventureQuestions()
+    : generateTrainingQuestions(tableFilter);
+  session = s;
+
+  hideAllOverlays();
+  $('progressFill').style.width = '0%';
+  renderPokedex();
+  renderBadges();
+  renderQuestion();
+
+  // Try to unlock audio context on first user gesture
+  getAudioCtx();
+}
+
+// ============================================================
+//  UI - Overlays, Mode Selector, Pokemon Modal, Teacher Mode
+// ============================================================
+
+function hideAllOverlays() {
+  ['startOverlay','gameOverOverlay','victoryOverlay','trainingDoneOverlay',
+   'pokemonDetailOverlay','teacherOverlay','teacherPwOverlay'].forEach(id => {
+    $(id).style.display = 'none';
+  });
+}
+
+function showStartScreen() {
+  hideAllOverlays();
+  $('startOverlay').style.display = 'flex';
+  selectMode('adventure');
+}
+
+// --- Mode selector ---
+let selectedMode = 'adventure';
+let selectedTable = 1;
+
+function selectMode(mode) {
+  selectedMode = mode;
+  document.querySelectorAll('.mode-card').forEach(c => {
+    c.classList.toggle('selected', c.dataset.mode === mode);
+  });
+
+  const picker = $('tablePicker');
+  const rules = $('modeRules');
+  const btn = $('startBtn');
+
+  if (mode === 'training') {
+    picker.classList.add('visible');
+    rules.innerHTML = '<strong>Modo Treino Livre:</strong><ul>' +
+      '<li>20 contas focadas em UMA tabuada</li>' +
+      '<li><strong>Sem game over</strong> — pode errar à vontade</li>' +
+      '<li>Ideal pra praticar a tabuada que mais te dá trabalho</li>' +
+      '</ul>';
+    btn.textContent = 'Começar Treino!';
+  } else {
+    picker.classList.remove('visible');
+    rules.innerHTML = '<strong>Modo Aventura:</strong><ul>' +
+      '<li>São <strong>40 contas</strong> de tabuada (1 a 9)</li>' +
+      '<li>Acertou? <strong>Capturou o Pokémon!</strong></li>' +
+      '<li>Errou <strong>10 vezes</strong>? Game Over!</li>' +
+      '<li>Combos de acertos aumentam a chance de ✨ shiny</li>' +
+      '</ul>';
+    btn.textContent = 'Começar Aventura!';
+  }
+}
+
+function renderTableButtons() {
+  const c = $('tableButtons');
+  c.innerHTML = '';
+  for (let t = 1; t <= 9; t++) {
+    const b = document.createElement('button');
+    b.className = 'table-btn';
+    if (t === selectedTable) b.classList.add('selected');
+    b.textContent = t;
+    b.dataset.table = t;
+    b.addEventListener('click', () => {
+      selectedTable = t;
+      renderTableButtons();
+    });
+    c.appendChild(b);
+  }
+}
+
+function handleStartClick() {
+  if (selectedMode === 'training') {
+    startSession('training', selectedTable);
+  } else {
+    startSession('adventure');
+  }
+}
+
+// --- Pokemon detail modal ---
+async function openPokemonModal(id) {
+  if (!persistent.pokedex[id]) return; // not captured yet
+  const captured = persistent.pokedex[id];
+
+  $('pdNum').textContent = '#' + pad3(id);
+  $('pdName').textContent = getPokemonName(id);
+  $('pdSprite').src = getPokemonSpriteUrl(id, captured.shiny);
+  $('pdDesc').innerHTML = '<span class="loading-spinner"></span> Carregando...';
+  $('pdHeight').textContent = '—';
+  $('pdWeight').textContent = '—';
+  $('pdTypes').innerHTML = '';
+  $('pdCryBtn').onclick = () => playCry(id);
+
+  $('pokemonDetailOverlay').style.display = 'flex';
+
+  const data = await fetchPokemonData(id);
+  if (data) {
+    renderTypeBadges($('pdTypes'), data.types);
+    $('pdHeight').textContent = data.heightM.toFixed(1) + ' m';
+    $('pdWeight').textContent = data.weightKg.toFixed(1) + ' kg';
+    $('pdDesc').textContent = data.description || 'Sem descrição disponível.';
+  } else {
+    $('pdDesc').textContent = 'Sem conexão. As informações deste Pokémon ainda não foram carregadas.';
+  }
+}
+
+// --- Teacher mode ---
+function openTeacherPasswordModal() {
+  $('teacherPwInput').value = '';
+  $('teacherPwInput').classList.remove('error');
+  $('teacherPwOverlay').style.display = 'flex';
+  setTimeout(() => $('teacherPwInput').focus(), 100);
+}
+
+function tryTeacherLogin() {
+  const v = $('teacherPwInput').value.trim();
+  if (v === TEACHER_PW) {
+    $('teacherPwOverlay').style.display = 'none';
+    openTeacherPanel();
+  } else {
+    $('teacherPwInput').classList.add('error');
+  }
+}
+
+function openTeacherPanel() {
+  // Switch to stats tab
+  document.querySelectorAll('.teacher-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === 'stats');
+  });
+  $('teacherStats').classList.remove('hidden');
+  $('teacherData').classList.add('hidden');
+  $('tmResetConfirm').classList.remove('visible');
+
+  populateTeacherStats();
+  $('teacherOverlay').style.display = 'flex';
+}
+
+function populateTeacherStats() {
+  const sessions = persistent.sessions || [];
+  $('tmSessions').textContent = sessions.length;
+  $('tmTotal').textContent = persistent.totalQuestions || 0;
+
+  const acc = persistent.totalQuestions > 0
+    ? Math.round((persistent.totalCorrect / persistent.totalQuestions) * 100) + '%'
+    : '—';
+  $('tmAccuracy').textContent = acc;
+
+  const avg = persistent.totalQuestions > 0
+    ? (persistent.totalTimeMs / persistent.totalQuestions / 1000).toFixed(1) + 's'
+    : '—';
+  $('tmAvgTime').textContent = avg;
+
+  // Per-table chart (success rate)
+  const chart = $('tmTablesChart');
+  chart.innerHTML = '';
+  for (let t = 1; t <= 9; t++) {
+    const errs = persistent.errorMap[t] || 0;
+    const succ = persistent.successMap[t] || 0;
+    const total = errs + succ;
+    if (total === 0) continue;
+    const errPct = (errs / total) * 100;
+
+    const row = document.createElement('div');
+    row.className = 'result-chart-row';
+    const label = document.createElement('div');
+    label.className = 'result-chart-label';
+    label.textContent = 'x' + t;
+    const bar = document.createElement('div');
+    bar.className = 'result-chart-bar';
+    const fill = document.createElement('div');
+    fill.className = 'result-chart-fill';
+    if (errs === 0) fill.classList.add('no-errors');
+    fill.style.width = (errs === 0 ? 8 : errPct) + '%';
+    bar.appendChild(fill);
+    const count = document.createElement('div');
+    count.className = 'result-chart-count';
+    if (errs === 0) count.classList.add('zero');
+    count.textContent = errs + '/' + total;
+    row.appendChild(label);
+    row.appendChild(bar);
+    row.appendChild(count);
+    chart.appendChild(row);
+  }
+  if (!chart.children.length) {
+    chart.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:12px;padding:10px;">Sem dados ainda.</div>';
+  }
+
+  // Session list
+  const list = $('tmSessionList');
+  list.innerHTML = '';
+  if (!sessions.length) {
+    list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:10px;">Sem sessões registradas.</div>';
+  } else {
+    sessions.slice(0, 5).forEach(s => {
+      const d = new Date(s.date);
+      const dateStr = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      const modeStr = s.mode === 'adventure' ? '🗺️ Aventura' : `🏋️ Treino x${s.tableFilter}`;
+      const outcomeStr = {
+        'victory': '🏆 Vitória',
+        'gameover': '😵 Game Over',
+        'training-done': '✓ Concluído'
+      }[s.outcome] || s.outcome;
+
+      const row = document.createElement('div');
+      row.style.cssText = 'padding: 8px 10px; background: var(--gray-light); border-radius: 8px; margin-bottom: 4px; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap;';
+      row.innerHTML = `
+        <span><strong>${dateStr}</strong> · ${modeStr}</span>
+        <span>${s.correct}/${s.answered} · ${outcomeStr}</span>
+      `;
+      list.appendChild(row);
+    });
+  }
+}
+
+function exportProgress() {
+  const blob = new Blob([JSON.stringify(persistent, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tabuada-pokemon-sofia-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✅ Progresso exportado!');
+}
+
+function importProgress(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (typeof data === 'object' && data.pokedex !== undefined) {
+        persistent = { ...defaultState(), ...data };
+        saveState();
+        renderPokedex();
+        renderBadges();
+        populateTeacherStats();
+        showToast('✅ Progresso importado!');
+      } else {
+        showToast('❌ Arquivo inválido.');
+      }
+    } catch (err) {
+      showToast('❌ Erro ao ler arquivo.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetAllData() {
+  persistent = defaultState();
+  saveState();
+  renderPokedex();
+  renderBadges();
+  populateTeacherStats();
+  $('tmResetConfirm').classList.remove('visible');
+  showToast('🗑️ Tudo resetado.');
+}
+
+// --- Mute toggle ---
+function updateMuteButton() {
+  const btn = $('muteBtn');
+  btn.textContent = persistent.settings.muted ? '🔇' : '🔊';
+  btn.classList.toggle('active', persistent.settings.muted);
+}
+
+function toggleMute() {
+  persistent.settings.muted = !persistent.settings.muted;
+  saveState();
+  updateMuteButton();
+}
+
+// ============================================================
+//  EVENT LISTENERS
+// ============================================================
+
+function setupEventListeners() {
+  // Submit answer
+  $('submitBtn').addEventListener('click', checkAnswer);
+  $('answer').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); checkAnswer(); }
+  });
+
+  // Start / restart buttons
+  $('startBtn').addEventListener('click', handleStartClick);
+  $('restartBtn').addEventListener('click', () => startSession('adventure'));
+  $('victoryBtn').addEventListener('click', () => startSession('adventure'));
+  $('trainingDoneBtn').addEventListener('click', showStartScreen);
+  $('goHomeBtn').addEventListener('click', showStartScreen);
+  $('vHomeBtn').addEventListener('click', showStartScreen);
+  $('homeBtn').addEventListener('click', () => {
+    if (session && !confirm('Voltar ao menu? Sua sessão atual será perdida.')) return;
+    session = null;
+    showStartScreen();
+  });
+
+  // Mode selector
+  document.querySelectorAll('.mode-card').forEach(c => {
+    c.addEventListener('click', () => selectMode(c.dataset.mode));
+  });
+
+  // Mute
+  $('muteBtn').addEventListener('click', toggleMute);
+
+  // Pokedex card clicks
+  $('pokedexGrid').addEventListener('click', (e) => {
+    const slot = e.target.closest('.pokedex-slot');
+    if (!slot || !slot.classList.contains('captured')) return;
+    const id = parseInt(slot.dataset.id, 10);
+    if (id) openPokemonModal(id);
+  });
+
+  // Pokemon modal
+  $('pdClose').addEventListener('click', () => {
+    $('pokemonDetailOverlay').style.display = 'none';
+    if (cryAudio) { cryAudio.pause(); cryAudio = null; }
+  });
+  $('pokemonDetailOverlay').addEventListener('click', (e) => {
+    if (e.target === $('pokemonDetailOverlay')) {
+      $('pokemonDetailOverlay').style.display = 'none';
+      if (cryAudio) { cryAudio.pause(); cryAudio = null; }
+    }
+  });
+
+  // Teacher mode
+  $('teacherModeBtn').addEventListener('click', openTeacherPasswordModal);
+  $('teacherPwCancel').addEventListener('click', () => {
+    $('teacherPwOverlay').style.display = 'none';
+  });
+  $('teacherPwOk').addEventListener('click', tryTeacherLogin);
+  $('teacherPwInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); tryTeacherLogin(); }
+  });
+  $('teacherClose').addEventListener('click', () => {
+    $('teacherOverlay').style.display = 'none';
+  });
+
+  document.querySelectorAll('.teacher-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.teacher-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.dataset.tab;
+      $('teacherStats').classList.toggle('hidden', target !== 'stats');
+      $('teacherData').classList.toggle('hidden', target !== 'data');
+    });
+  });
+
+  $('tmExportBtn').addEventListener('click', exportProgress);
+  $('tmImportBtn').addEventListener('click', () => $('tmImportFile').click());
+  $('tmImportFile').addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if (f) importProgress(f);
+    e.target.value = '';
+  });
+  $('tmResetBtn').addEventListener('click', () => {
+    $('tmResetConfirm').classList.add('visible');
+  });
+  $('tmResetCancel').addEventListener('click', () => {
+    $('tmResetConfirm').classList.remove('visible');
+  });
+  $('tmResetYes').addEventListener('click', resetAllData);
+
+  // Prevent zoom on iOS input focus (visual only, doesn't affect numeric)
+  $('answer').addEventListener('focus', () => {
+    document.body.style.fontSize = '16px';
+  });
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+
+function init() {
+  setupEventListeners();
+  renderPokedex();
+  renderBadges();
+  renderTableButtons();
+  updateMuteButton();
+  $('bestScore').textContent = persistent.bestScore;
+  showStartScreen();
+}
+
+// Wait for DOM
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
