@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabuada Pokémon - Sofia</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #DC2626;
+    --red-dark: #991B1B;
+    --blue: #2563EB;
+    --yellow: #FBBF24;
+    --green: #16A34A;
+    --bg: #FEF3C7;
+    --card: #FFFFFF;
+    --ink: #1F2937;
+    --muted: #6B7280;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .display { font-family: 'Fredoka One', cursive; }
+
+  /* === LAYOUT === */
+  .app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    min-height: 100vh;
+  }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+  }
+
+  /* === MAIN PANEL === */
+  .main {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 4px solid var(--red);
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 28px;
+    color: var(--red);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .title-icon {
+    width: 36px; height: 36px;
+    background: var(--red);
+    border-radius: 50%;
+    position: relative;
+    border: 3px solid var(--ink);
+  }
+  .title-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 4px;
+    background: var(--ink);
+    transform: translateY(-50%);
+  }
+  .title-icon::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 12px; height: 12px;
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+
+  /* === STATS BAR === */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .stat {
+    background: #F3F4F6;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    border: 2px solid #E5E7EB;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+
+  .stat.errors { background: #FEE2E2; border-color: #FCA5A5; }
+  .stat.errors .stat-value { color: var(--red); }
+  .stat.score { background: #D1FAE5; border-color: #86EFAC; }
+  .stat.score .stat-value { color: var(--green); }
+  .stat.progress .stat-value { color: var(--blue); }
+
+  /* === PROGRESS BAR === */
+  .progress-bar {
+    height: 12px;
+    background: #E5E7EB;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 28px;
+    border: 2px solid #D1D5DB;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--yellow), var(--red));
+    transition: width 0.4s ease;
+    border-radius: 4px;
+  }
+
+  /* === QUESTION AREA === */
+  .question-area {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+    border-radius: 16px;
+    border: 3px dashed var(--blue);
+    margin-bottom: 24px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pokemon-sprite {
+    width: 160px;
+    height: 160px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    margin-bottom: 12px;
+    animation: bounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .pokemon-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: capitalize;
+    margin-bottom: 8px;
+  }
+
+  .question {
+    font-size: 56px;
+    color: var(--ink);
+    font-family: 'Fredoka One', cursive;
+    letter-spacing: 2px;
+  }
+
+  /* === ANSWER INPUT === */
+  .answer-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .answer-input {
+    width: 140px;
+    height: 70px;
+    font-size: 36px;
+    text-align: center;
+    border: 4px solid var(--blue);
+    border-radius: 12px;
+    font-family: 'Fredoka One', cursive;
+    color: var(--ink);
+    background: white;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .answer-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15);
+  }
+
+  .btn {
+    height: 70px;
+    padding: 0 32px;
+    font-size: 22px;
+    font-weight: 800;
+    font-family: 'Fredoka One', cursive;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 4px 0 var(--red-dark);
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--red-dark); }
+  .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--red-dark); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* === FEEDBACK === */
+  .feedback {
+    text-align: center;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 18px;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .feedback.correct {
+    background: #D1FAE5;
+    color: #065F46;
+    border: 2px solid var(--green);
+    animation: shake-correct 0.4s;
+  }
+
+  .feedback.wrong {
+    background: #FEE2E2;
+    color: var(--red-dark);
+    border: 2px solid var(--red);
+    animation: shake-wrong 0.4s;
+  }
+
+  .feedback.empty {
+    background: transparent;
+    color: transparent;
+  }
+
+  @keyframes shake-correct {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  @keyframes shake-wrong {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  /* === SIDEBAR / POKEDEX === */
+  .sidebar {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 4px solid var(--red);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+  }
+
+  .sidebar-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 22px;
+    color: var(--red);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-sub {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .pokedex-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    max-height: 420px;
+    overflow-y: auto;
+    padding: 8px;
+    background: #F3F4F6;
+    border-radius: 12px;
+    border: 2px solid #E5E7EB;
+  }
+
+  .pokedex-slot {
+    aspect-ratio: 1;
+    background: #E5E7EB;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    position: relative;
+  }
+
+  .pokedex-slot.captured {
+    background: white;
+    border-color: var(--yellow);
+    animation: pop 0.4s ease-out;
+  }
+
+  .pokedex-slot.shiny {
+    background: linear-gradient(135deg, #FEF3C7, #FBBF24);
+    border-color: #F59E0B;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+  }
+
+  .pokedex-slot img {
+    width: 90%;
+    height: 90%;
+    image-rendering: pixelated;
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  .best-score {
+    margin-top: 16px;
+    padding: 12px;
+    background: #FEF3C7;
+    border: 2px solid var(--yellow);
+    border-radius: 12px;
+    text-align: center;
+  }
+  .best-score-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #92400E;
+  }
+  .best-score-value {
+    font-family: 'Fredoka One', cursive;
+    font-size: 28px;
+    color: #92400E;
+  }
+
+  /* === OVERLAYS (Start / GameOver / Victory) === */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    animation: fadeIn 0.3s;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .modal {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    border: 6px solid var(--red);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    animation: slideUp 0.4s ease-out;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 36px;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+
+  .modal-subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    font-weight: 600;
+  }
+
+  .modal-sprite {
+    width: 180px; height: 180px;
+    image-rendering: pixelated;
+    margin: 0 auto 20px;
+    display: block;
+  }
+
+  .modal-sprite.fainted {
+    filter: grayscale(100%) brightness(0.7);
+    transform: rotate(180deg);
+  }
+
+  .modal-stats {
+    background: #F3F4F6;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .modal-stat-label { font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
+  .modal-stat-value { font-family: 'Fredoka One', cursive; font-size: 24px; color: var(--ink); }
+
+  .modal-rules {
+    background: #DBEAFE;
+    border: 2px solid var(--blue);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+    text-align: left;
+    font-size: 14px;
+  }
+  .modal-rules ul { list-style: none; }
+  .modal-rules li { padding: 4px 0; }
+  .modal-rules li::before { content: "▸ "; color: var(--red); font-weight: bold; }
+
+  /* === SHINY SPARKLE === */
+  .sparkle {
+    position: absolute;
+    pointer-events: none;
+    font-size: 24px;
+    animation: sparkle 1.2s ease-out forwards;
+  }
+  @keyframes sparkle {
+    0% { transform: scale(0) rotate(0deg); opacity: 1; }
+    100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+  }
+
+  /* === RESPONSIVE ADJUSTMENTS === */
+  @media (max-width: 600px) {
+    .question { font-size: 42px; }
+    .answer-input { width: 110px; font-size: 28px; }
+    .btn { padding: 0 20px; font-size: 18px; }
+    .main, .sidebar { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- MAIN GAME PANEL -->
+  <div class="main">
+    <div class="header">
+      <h1 class="title display">
+        <span class="title-icon"></span>
+        Tabuada Pokémon
+      </h1>
+    </div>
+
+    <div class="stats">
+      <div class="stat progress">
+        <div class="stat-label">Conta</div>
+        <div class="stat-value"><span id="current">1</span> / 40</div>
+      </div>
+      <div class="stat score">
+        <div class="stat-label">Acertos</div>
+        <div class="stat-value" id="correct">0</div>
+      </div>
+      <div class="stat errors">
+        <div class="stat-label">Erros</div>
+        <div class="stat-value"><span id="errors">0</span> / 10</div>
+      </div>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="question-area">
+      <img class="pokemon-sprite" id="pokemonSprite" src="" alt="">
+      <div class="pokemon-name" id="pokemonName">Pokémon Selvagem Apareceu!</div>
+      <div class="question display" id="question">— x — = ?</div>
+    </div>
+
+    <div class="answer-row">
+      <input
+        type="number"
+        class="answer-input"
+        id="answer"
+        placeholder="?"
+        autocomplete="off"
+        inputmode="numeric"
+      >
+      <button class="btn" id="submitBtn">Capturar!</button>
+    </div>
+
+    <div class="feedback empty" id="feedback">&nbsp;</div>
+  </div>
+
+  <!-- SIDEBAR / POKEDEX -->
+  <div class="sidebar">
+    <div class="sidebar-title">📕 Pokédex da Sofia</div>
+    <div class="sidebar-sub">
+      <span id="pokedexCount">0</span> Pokémons capturados
+    </div>
+    <div class="pokedex-grid" id="pokedexGrid"></div>
+    <div class="best-score">
+      <div class="best-score-label">🏆 Melhor Resultado</div>
+      <div class="best-score-value"><span id="bestScore">0</span> / 40</div>
+    </div>
+  </div>
+</div>
+
+<!-- START SCREEN -->
+<div class="overlay" id="startOverlay">
+  <div class="modal">
+    <img class="modal-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="Pikachu">
+    <h2 class="modal-title">Tabuada Pokémon!</h2>
+    <p class="modal-subtitle">Vamos capturar todos os Pokémons da 1ª Geração!</p>
+    <div class="modal-rules">
+      <strong>Como jogar:</strong>
+      <ul>
+        <li>São <strong>40 contas</strong> de tabuada (1 a 9)</li>
+        <li>Acertou? <strong>Capturou o Pokémon!</strong></li>
+        <li>Errou <strong>10 vezes</strong>? Game Over!</li>
+        <li>Pokémons brilhantes (✨ shiny) são raríssimos!</li>
+      </ul>
+    </div>
+    <button class="btn" id="startBtn" style="width: 100%;">Começar Aventura!</button>
+  </div>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div class="overlay" id="gameOverOverlay" style="display:none;">
+  <div class="modal">
+    <img class="modal-sprite fainted" id="faintedSprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="Pokémon desmaiado">
+    <h2 class="modal-title">Seus Pokémons desmaiaram! 😵</h2>
+    <p class="modal-subtitle">Volte ao Centro Pokémon e tente novamente!</p>
+    <div class="modal-stats">
+      <div>
+        <div class="modal-stat-label">Capturados</div>
+        <div class="modal-stat-value" id="goCorrect">0</div>
+      </div>
+      <div>
+        <div class="modal-stat-label">Erros</div>
+        <div class="modal-stat-value" id="goErrors">10</div>
+      </div>
+    </div>
+    <button class="btn" id="restartBtn" style="width: 100%;">Tentar de Novo</button>
+  </div>
+</div>
+
+<!-- VICTORY SCREEN -->
+<div class="overlay" id="victoryOverlay" style="display:none;">
+  <div class="modal">
+    <img class="modal-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png" alt="Mewtwo">
+    <h2 class="modal-title">🏆 Mestre Pokémon!</h2>
+    <p class="modal-subtitle">Sofia, você é incrível! Completou todas as 40 capturas!</p>
+    <div class="modal-stats">
+      <div>
+        <div class="modal-stat-label">Acertos</div>
+        <div class="modal-stat-value" id="vCorrect">40</div>
+      </div>
+      <div>
+        <div class="modal-stat-label">Erros</div>
+        <div class="modal-stat-value" id="vErrors">0</div>
+      </div>
+    </div>
+    <button class="btn" id="victoryBtn" style="width: 100%;">Nova Aventura</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  TABUADA POKÉMON - lógica do jogo
+// ============================================================
+
+// --- Pokémons da 1ª geração (IDs 1-151) ---
+// Uma pool boa para variar entre rodadas
+const GEN1_POKEMON = [];
+const POKEMON_NAMES = {
+  1: 'Bulbasaur', 4: 'Charmander', 7: 'Squirtle', 10: 'Caterpie', 13: 'Weedle',
+  16: 'Pidgey', 19: 'Rattata', 25: 'Pikachu', 27: 'Sandshrew', 29: 'Nidoran',
+  32: 'Nidoran', 35: 'Clefairy', 37: 'Vulpix', 39: 'Jigglypuff', 41: 'Zubat',
+  43: 'Oddish', 46: 'Paras', 48: 'Venonat', 50: 'Diglett', 52: 'Meowth',
+  54: 'Psyduck', 56: 'Mankey', 58: 'Growlithe', 60: 'Poliwag', 63: 'Abra',
+  66: 'Machop', 69: 'Bellsprout', 72: 'Tentacool', 74: 'Geodude', 77: 'Ponyta',
+  79: 'Slowpoke', 81: 'Magnemite', 83: 'Farfetch\'d', 84: 'Doduo', 86: 'Seel',
+  88: 'Grimer', 90: 'Shellder', 92: 'Gastly', 95: 'Onix', 96: 'Drowzee',
+  98: 'Krabby', 100: 'Voltorb', 102: 'Exeggcute', 104: 'Cubone', 108: 'Lickitung',
+  109: 'Koffing', 111: 'Rhyhorn', 113: 'Chansey', 114: 'Tangela', 115: 'Kangaskhan',
+  116: 'Horsea', 118: 'Goldeen', 120: 'Staryu', 122: 'Mr. Mime', 123: 'Scyther',
+  127: 'Pinsir', 129: 'Magikarp', 131: 'Lapras', 133: 'Eevee', 137: 'Porygon',
+  138: 'Omanyte', 140: 'Kabuto', 142: 'Aerodactyl', 143: 'Snorlax', 147: 'Dratini',
+  150: 'Mewtwo', 151: 'Mew'
+};
+for (let i = 1; i <= 151; i++) GEN1_POKEMON.push(i);
+
+const SHINY_CHANCE = 0.08; // 8% de chance de shiny por captura
+
+// --- Estado persistente ---
+function loadState() {
+  try {
+    const raw = localStorage.getItem('tabuadaPokemon_v1');
+    if (!raw) return { bestScore: 0, pokedex: {}, errorMap: {} };
+    return JSON.parse(raw);
+  } catch (e) {
+    return { bestScore: 0, pokedex: {}, errorMap: {} };
+  }
+}
+function saveState() {
+  try {
+    localStorage.setItem('tabuadaPokemon_v1', JSON.stringify(persistent));
+  } catch (e) {}
+}
+let persistent = loadState();
+
+// --- Estado da partida ---
+let session = {
+  questions: [],
+  currentIdx: 0,
+  correct: 0,
+  errors: 0,
+  currentPokemonId: null,
+  currentIsShiny: false,
+  sessionPokedex: [], // pokémons capturados nesta partida
+  awaiting: false, // bloqueia input durante feedback
+};
+
+// --- Geração de contas ---
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getWeightedTables() {
+  // Retorna um array de tabuadas (1-9) com peso baseado em erros anteriores
+  // Tabuadas com mais erros aparecem mais vezes
+  const pool = [];
+  for (let t = 1; t <= 9; t++) {
+    const errCount = persistent.errorMap[t] || 0;
+    // Peso base 1, +1 para cada erro registrado nessa tabuada (limitado a 5)
+    const weight = 1 + Math.min(errCount, 5);
+    for (let w = 0; w < weight; w++) pool.push(t);
+  }
+  return pool;
+}
+
+function pickWeightedTable() {
+  const pool = getWeightedTables();
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function generateQuestions() {
+  const questions = [];
+
+  // 30 de multiplicação
+  for (let i = 0; i < 30; i++) {
+    const a = pickWeightedTable();
+    const b = Math.floor(Math.random() * 9) + 1; // 1-9
+    questions.push({ type: 'mul', a, b, answer: a * b });
+  }
+
+  // 10 de divisão (sempre exatas)
+  for (let i = 0; i < 10; i++) {
+    const a = pickWeightedTable();
+    const b = Math.floor(Math.random() * 9) + 1; // 1-9
+    const product = a * b;
+    questions.push({ type: 'div', a: product, b: a, answer: b });
+  }
+
+  return shuffle(questions);
+}
+
+// --- Pokémon helpers ---
+function pickRandomPokemon() {
+  return GEN1_POKEMON[Math.floor(Math.random() * GEN1_POKEMON.length)];
+}
+
+function getPokemonSpriteUrl(id, shiny = false) {
+  const base = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
+  return shiny ? `${base}/shiny/${id}.png` : `${base}/${id}.png`;
+}
+
+function getPokemonName(id) {
+  return POKEMON_NAMES[id] || `Pokémon #${id}`;
+}
+
+// --- Renderização ---
+function renderQuestion() {
+  const q = session.questions[session.currentIdx];
+  if (!q) return;
+
+  const symbol = q.type === 'mul' ? '×' : '÷';
+  document.getElementById('question').textContent = `${q.a} ${symbol} ${q.b}`;
+
+  // Pokémon novo para esta conta
+  session.currentPokemonId = pickRandomPokemon();
+  session.currentIsShiny = Math.random() < SHINY_CHANCE;
+
+  const sprite = document.getElementById('pokemonSprite');
+  sprite.src = getPokemonSpriteUrl(session.currentPokemonId, session.currentIsShiny);
+  sprite.alt = getPokemonName(session.currentPokemonId);
+
+  const shinyLabel = session.currentIsShiny ? ' ✨' : '';
+  document.getElementById('pokemonName').textContent =
+    `Um ${getPokemonName(session.currentPokemonId)}${shinyLabel} selvagem apareceu!`;
+
+  document.getElementById('current').textContent = session.currentIdx + 1;
+  document.getElementById('correct').textContent = session.correct;
+  document.getElementById('errors').textContent = session.errors;
+
+  const pct = (session.currentIdx / 40) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  const input = document.getElementById('answer');
+  input.value = '';
+  input.disabled = false;
+  document.getElementById('submitBtn').disabled = false;
+  input.focus();
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback empty';
+  fb.innerHTML = '&nbsp;';
+}
+
+function renderPokedex() {
+  const grid = document.getElementById('pokedexGrid');
+  grid.innerHTML = '';
+
+  // Mostra acumulado entre sessões + da sessão atual
+  const allCaptured = { ...persistent.pokedex };
+  session.sessionPokedex.forEach(p => {
+    if (!allCaptured[p.id]) allCaptured[p.id] = p;
+  });
+
+  // Mostra 20 slots por padrão; expande conforme captura
+  const slots = Math.max(20, Object.keys(allCaptured).length);
+  const sortedIds = Object.keys(allCaptured).map(Number).sort((a, b) => a - b);
+
+  for (let i = 0; i < slots; i++) {
+    const div = document.createElement('div');
+    div.className = 'pokedex-slot';
+    if (sortedIds[i]) {
+      const p = allCaptured[sortedIds[i]];
+      div.classList.add('captured');
+      if (p.shiny) div.classList.add('shiny');
+      const img = document.createElement('img');
+      img.src = getPokemonSpriteUrl(p.id, p.shiny);
+      img.alt = getPokemonName(p.id);
+      img.title = getPokemonName(p.id) + (p.shiny ? ' ✨' : '');
+      div.appendChild(img);
+    }
+    grid.appendChild(div);
+  }
+
+  document.getElementById('pokedexCount').textContent = Object.keys(allCaptured).length;
+  document.getElementById('bestScore').textContent = persistent.bestScore;
+}
+
+// --- Fluxo de resposta ---
+function checkAnswer() {
+  if (session.awaiting) return;
+
+  const input = document.getElementById('answer');
+  const val = parseInt(input.value, 10);
+  if (isNaN(val)) {
+    input.focus();
+    return;
+  }
+
+  const q = session.questions[session.currentIdx];
+  const correct = val === q.answer;
+  const fb = document.getElementById('feedback');
+
+  session.awaiting = true;
+  input.disabled = true;
+  document.getElementById('submitBtn').disabled = true;
+
+  if (correct) {
+    session.correct++;
+    // Captura o pokémon
+    const captured = {
+      id: session.currentPokemonId,
+      shiny: session.currentIsShiny
+    };
+    session.sessionPokedex.push(captured);
+    if (!persistent.pokedex[captured.id] || captured.shiny) {
+      persistent.pokedex[captured.id] = captured;
+    }
+
+    const shinyTxt = session.currentIsShiny ? ' ✨ SHINY ✨' : '';
+    fb.className = 'feedback correct';
+    fb.innerHTML = `✅ Você capturou um <strong>${getPokemonName(captured.id)}</strong>${shinyTxt}!`;
+
+    renderPokedex();
+    saveState();
+
+    setTimeout(() => {
+      advanceQuestion();
+    }, session.currentIsShiny ? 1600 : 1000);
+  } else {
+    session.errors++;
+    // Registra erro na tabuada para ponderação futura
+    // (usa o operando maior da multiplicação, ou o divisor da divisão)
+    const tableKey = q.type === 'mul' ? q.a : q.b;
+    persistent.errorMap[tableKey] = (persistent.errorMap[tableKey] || 0) + 1;
+
+    fb.className = 'feedback wrong';
+    fb.innerHTML = `❌ Errado! A resposta era <strong>${q.answer}</strong>. O Pokémon fugiu!`;
+
+    document.getElementById('errors').textContent = session.errors;
+    saveState();
+
+    setTimeout(() => {
+      if (session.errors >= 10) {
+        showGameOver();
+      } else {
+        advanceQuestion();
+      }
+    }, 1500);
+  }
+}
+
+function advanceQuestion() {
+  session.awaiting = false;
+  session.currentIdx++;
+
+  if (session.currentIdx >= 40) {
+    showVictory();
+    return;
+  }
+
+  renderQuestion();
+}
+
+function showGameOver() {
+  document.getElementById('goCorrect').textContent = session.correct;
+  document.getElementById('goErrors').textContent = session.errors;
+  // Sprite do pokémon que ela errou por último
+  document.getElementById('faintedSprite').src =
+    getPokemonSpriteUrl(session.currentPokemonId || 25);
+
+  // Salva melhor pontuação
+  if (session.correct > persistent.bestScore) {
+    persistent.bestScore = session.correct;
+    saveState();
+  }
+
+  document.getElementById('gameOverOverlay').style.display = 'flex';
+}
+
+function showVictory() {
+  document.getElementById('vCorrect').textContent = session.correct;
+  document.getElementById('vErrors').textContent = session.errors;
+
+  if (session.correct > persistent.bestScore) {
+    persistent.bestScore = session.correct;
+    saveState();
+  }
+
+  document.getElementById('victoryOverlay').style.display = 'flex';
+}
+
+function startNewSession() {
+  session = {
+    questions: generateQuestions(),
+    currentIdx: 0,
+    correct: 0,
+    errors: 0,
+    currentPokemonId: null,
+    currentIsShiny: false,
+    sessionPokedex: [],
+    awaiting: false,
+  };
+
+  document.getElementById('startOverlay').style.display = 'none';
+  document.getElementById('gameOverOverlay').style.display = 'none';
+  document.getElementById('victoryOverlay').style.display = 'none';
+
+  document.getElementById('progressFill').style.width = '0%';
+
+  renderPokedex();
+  renderQuestion();
+}
+
+// --- Event listeners ---
+document.getElementById('submitBtn').addEventListener('click', checkAnswer);
+document.getElementById('answer').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    checkAnswer();
+  }
+});
+document.getElementById('startBtn').addEventListener('click', startNewSession);
+document.getElementById('restartBtn').addEventListener('click', startNewSession);
+document.getElementById('victoryBtn').addEventListener('click', startNewSession);
+
+// --- Inicialização ---
+renderPokedex();
+document.getElementById('bestScore').textContent = persistent.bestScore;
+</script>
+</body>
+</html>
