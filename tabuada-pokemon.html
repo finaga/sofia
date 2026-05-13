@@ -36,7 +36,7 @@
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 1fr 340px;
     gap: 24px;
     min-height: 100vh;
   }
@@ -159,7 +159,7 @@
     border-radius: 16px;
     border: 3px dashed var(--blue);
     margin-bottom: 24px;
-    min-height: 280px;
+    min-height: 320px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -181,11 +181,35 @@
   }
 
   .pokemon-name {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .pokemon-name .num {
     color: var(--muted);
-    text-transform: capitalize;
-    margin-bottom: 8px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+
+  .pokemon-name .shiny-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #FBBF24, #F59E0B);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin-left: 8px;
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  }
+
+  .pokemon-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-style: italic;
   }
 
   .question {
@@ -301,38 +325,87 @@
     font-size: 22px;
     color: var(--red);
     text-align: center;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .sidebar-sub {
     font-size: 13px;
     color: var(--muted);
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     font-weight: 600;
   }
 
   .pokedex-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    max-height: 420px;
+    gap: 8px;
+    max-height: 520px;
     overflow-y: auto;
-    padding: 8px;
+    padding: 10px;
     background: #F3F4F6;
     border-radius: 12px;
     border: 2px solid #E5E7EB;
+    scrollbar-width: thin;
   }
 
+  .pokedex-grid::-webkit-scrollbar { width: 8px; }
+  .pokedex-grid::-webkit-scrollbar-track { background: #E5E7EB; border-radius: 4px; }
+  .pokedex-grid::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
+
   .pokedex-slot {
-    aspect-ratio: 1;
     background: #E5E7EB;
     border-radius: 8px;
+    border: 2px solid transparent;
+    padding: 4px 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 88px;
+    position: relative;
+  }
+
+  .pokedex-slot .num {
+    font-size: 9px;
+    color: var(--muted);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .pokedex-slot .img-wrap {
+    width: 100%;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid transparent;
-    position: relative;
+  }
+
+  .pokedex-slot img {
+    max-width: 100%;
+    max-height: 100%;
+    image-rendering: pixelated;
+  }
+
+  .pokedex-slot .placeholder-q {
+    font-family: 'Fredoka One', cursive;
+    font-size: 32px;
+    color: #9CA3AF;
+    line-height: 1;
+  }
+
+  .pokedex-slot .pname {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.1;
+    margin-top: 2px;
+    word-break: break-word;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .pokedex-slot.captured {
@@ -340,17 +413,21 @@
     border-color: var(--yellow);
     animation: pop 0.4s ease-out;
   }
+  .pokedex-slot.captured .pname { color: var(--ink); }
 
   .pokedex-slot.shiny {
     background: linear-gradient(135deg, #FEF3C7, #FBBF24);
     border-color: #F59E0B;
     box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
   }
+  .pokedex-slot.shiny .pname { color: #92400E; }
 
-  .pokedex-slot img {
-    width: 90%;
-    height: 90%;
-    image-rendering: pixelated;
+  .pokedex-slot.shiny::after {
+    content: '✨';
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 14px;
   }
 
   @keyframes pop {
@@ -463,24 +540,13 @@
   .modal-rules li { padding: 4px 0; }
   .modal-rules li::before { content: "▸ "; color: var(--red); font-weight: bold; }
 
-  /* === SHINY SPARKLE === */
-  .sparkle {
-    position: absolute;
-    pointer-events: none;
-    font-size: 24px;
-    animation: sparkle 1.2s ease-out forwards;
-  }
-  @keyframes sparkle {
-    0% { transform: scale(0) rotate(0deg); opacity: 1; }
-    100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
-  }
-
   /* === RESPONSIVE ADJUSTMENTS === */
   @media (max-width: 600px) {
     .question { font-size: 42px; }
     .answer-input { width: 110px; font-size: 28px; }
     .btn { padding: 0 20px; font-size: 18px; }
     .main, .sidebar { padding: 18px; }
+    .pokedex-grid { grid-template-columns: repeat(3, 1fr); }
   }
 </style>
 </head>
@@ -517,7 +583,12 @@
 
     <div class="question-area">
       <img class="pokemon-sprite" id="pokemonSprite" src="" alt="">
-      <div class="pokemon-name" id="pokemonName">Pokémon Selvagem Apareceu!</div>
+      <div class="pokemon-name" id="pokemonName">
+        <span id="pokemonNameText">Bulbasaur</span>
+        <span class="num" id="pokemonNum">#001</span>
+        <span class="shiny-tag" id="shinyTag" style="display:none;">✨ SHINY</span>
+      </div>
+      <div class="pokemon-sub">Um Pokémon selvagem apareceu!</div>
       <div class="question display" id="question">— x — = ?</div>
     </div>
 
@@ -538,9 +609,9 @@
 
   <!-- SIDEBAR / POKEDEX -->
   <div class="sidebar">
-    <div class="sidebar-title">📕 Pokédex da Sofia</div>
+    <div class="sidebar-title">📕 Pokédex</div>
     <div class="sidebar-sub">
-      <span id="pokedexCount">0</span> Pokémons capturados
+      <span id="pokedexCount">0</span> / 151 capturados
     </div>
     <div class="pokedex-grid" id="pokedexGrid"></div>
     <div class="best-score">
@@ -614,33 +685,54 @@
 //  TABUADA POKÉMON - lógica do jogo
 // ============================================================
 
-// --- Pokémons da 1ª geração (IDs 1-151) ---
-// Uma pool boa para variar entre rodadas
-const GEN1_POKEMON = [];
-const POKEMON_NAMES = {
-  1: 'Bulbasaur', 4: 'Charmander', 7: 'Squirtle', 10: 'Caterpie', 13: 'Weedle',
-  16: 'Pidgey', 19: 'Rattata', 25: 'Pikachu', 27: 'Sandshrew', 29: 'Nidoran',
-  32: 'Nidoran', 35: 'Clefairy', 37: 'Vulpix', 39: 'Jigglypuff', 41: 'Zubat',
-  43: 'Oddish', 46: 'Paras', 48: 'Venonat', 50: 'Diglett', 52: 'Meowth',
-  54: 'Psyduck', 56: 'Mankey', 58: 'Growlithe', 60: 'Poliwag', 63: 'Abra',
-  66: 'Machop', 69: 'Bellsprout', 72: 'Tentacool', 74: 'Geodude', 77: 'Ponyta',
-  79: 'Slowpoke', 81: 'Magnemite', 83: 'Farfetch\'d', 84: 'Doduo', 86: 'Seel',
-  88: 'Grimer', 90: 'Shellder', 92: 'Gastly', 95: 'Onix', 96: 'Drowzee',
-  98: 'Krabby', 100: 'Voltorb', 102: 'Exeggcute', 104: 'Cubone', 108: 'Lickitung',
-  109: 'Koffing', 111: 'Rhyhorn', 113: 'Chansey', 114: 'Tangela', 115: 'Kangaskhan',
-  116: 'Horsea', 118: 'Goldeen', 120: 'Staryu', 122: 'Mr. Mime', 123: 'Scyther',
-  127: 'Pinsir', 129: 'Magikarp', 131: 'Lapras', 133: 'Eevee', 137: 'Porygon',
-  138: 'Omanyte', 140: 'Kabuto', 142: 'Aerodactyl', 143: 'Snorlax', 147: 'Dratini',
-  150: 'Mewtwo', 151: 'Mew'
-};
-for (let i = 1; i <= 151; i++) GEN1_POKEMON.push(i);
+// --- Lista hardcoded dos 151 Pokémons da Gen 1 ---
+const POKEDEX = [
+  "Bulbasaur","Ivysaur","Venusaur","Charmander","Charmeleon","Charizard",
+  "Squirtle","Wartortle","Blastoise","Caterpie","Metapod","Butterfree",
+  "Weedle","Kakuna","Beedrill","Pidgey","Pidgeotto","Pidgeot",
+  "Rattata","Raticate","Spearow","Fearow","Ekans","Arbok",
+  "Pikachu","Raichu","Sandshrew","Sandslash","Nidoran♀","Nidorina",
+  "Nidoqueen","Nidoran♂","Nidorino","Nidoking","Clefairy","Clefable",
+  "Vulpix","Ninetales","Jigglypuff","Wigglytuff","Zubat","Golbat",
+  "Oddish","Gloom","Vileplume","Paras","Parasect","Venonat",
+  "Venomoth","Diglett","Dugtrio","Meowth","Persian","Psyduck",
+  "Golduck","Mankey","Primeape","Growlithe","Arcanine","Poliwag",
+  "Poliwhirl","Poliwrath","Abra","Kadabra","Alakazam","Machop",
+  "Machoke","Machamp","Bellsprout","Weepinbell","Victreebel","Tentacool",
+  "Tentacruel","Geodude","Graveler","Golem","Ponyta","Rapidash",
+  "Slowpoke","Slowbro","Magnemite","Magneton","Farfetch'd","Doduo",
+  "Dodrio","Seel","Dewgong","Grimer","Muk","Shellder",
+  "Cloyster","Gastly","Haunter","Gengar","Onix","Drowzee",
+  "Hypno","Krabby","Kingler","Voltorb","Electrode","Exeggcute",
+  "Exeggutor","Cubone","Marowak","Hitmonlee","Hitmonchan","Lickitung",
+  "Koffing","Weezing","Rhyhorn","Rhydon","Chansey","Tangela",
+  "Kangaskhan","Horsea","Seadra","Goldeen","Seaking","Staryu",
+  "Starmie","Mr. Mime","Scyther","Jynx","Electabuzz","Magmar",
+  "Pinsir","Tauros","Magikarp","Gyarados","Lapras","Ditto",
+  "Eevee","Vaporeon","Jolteon","Flareon","Porygon","Omanyte",
+  "Omastar","Kabuto","Kabutops","Aerodactyl","Snorlax","Articuno",
+  "Zapdos","Moltres","Dratini","Dragonair","Dragonite","Mewtwo",
+  "Mew"
+];
 
-const SHINY_CHANCE = 0.08; // 8% de chance de shiny por captura
+const SHINY_CHANCE = 0.08; // 8% chance
 
-// --- Estado persistente ---
+// --- Helpers ---
+function pad3(n) {
+  return String(n).padStart(3, '0');
+}
+function getPokemonName(id) {
+  return POKEDEX[id - 1] || `Pokémon #${pad3(id)}`;
+}
+function getPokemonSpriteUrl(id, shiny = false) {
+  const base = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
+  return shiny ? `${base}/shiny/${id}.png` : `${base}/${id}.png`;
+}
+
+// --- Estado persistente (localStorage) ---
 function loadState() {
   try {
-    const raw = localStorage.getItem('tabuadaPokemon_v1');
+    const raw = localStorage.getItem('tabuadaPokemon_v2');
     if (!raw) return { bestScore: 0, pokedex: {}, errorMap: {} };
     return JSON.parse(raw);
   } catch (e) {
@@ -649,7 +741,7 @@ function loadState() {
 }
 function saveState() {
   try {
-    localStorage.setItem('tabuadaPokemon_v1', JSON.stringify(persistent));
+    localStorage.setItem('tabuadaPokemon_v2', JSON.stringify(persistent));
   } catch (e) {}
 }
 let persistent = loadState();
@@ -662,8 +754,7 @@ let session = {
   errors: 0,
   currentPokemonId: null,
   currentIsShiny: false,
-  sessionPokedex: [], // pokémons capturados nesta partida
-  awaiting: false, // bloqueia input durante feedback
+  awaiting: false,
 };
 
 // --- Geração de contas ---
@@ -677,12 +768,9 @@ function shuffle(arr) {
 }
 
 function getWeightedTables() {
-  // Retorna um array de tabuadas (1-9) com peso baseado em erros anteriores
-  // Tabuadas com mais erros aparecem mais vezes
   const pool = [];
   for (let t = 1; t <= 9; t++) {
     const errCount = persistent.errorMap[t] || 0;
-    // Peso base 1, +1 para cada erro registrado nessa tabuada (limitado a 5)
     const weight = 1 + Math.min(errCount, 5);
     for (let w = 0; w < weight; w++) pool.push(t);
   }
@@ -697,17 +785,17 @@ function pickWeightedTable() {
 function generateQuestions() {
   const questions = [];
 
-  // 30 de multiplicação
+  // 30 multiplicações
   for (let i = 0; i < 30; i++) {
     const a = pickWeightedTable();
-    const b = Math.floor(Math.random() * 9) + 1; // 1-9
+    const b = Math.floor(Math.random() * 9) + 1;
     questions.push({ type: 'mul', a, b, answer: a * b });
   }
 
-  // 10 de divisão (sempre exatas)
+  // 10 divisões exatas
   for (let i = 0; i < 10; i++) {
     const a = pickWeightedTable();
-    const b = Math.floor(Math.random() * 9) + 1; // 1-9
+    const b = Math.floor(Math.random() * 9) + 1;
     const product = a * b;
     questions.push({ type: 'div', a: product, b: a, answer: b });
   }
@@ -715,18 +803,45 @@ function generateQuestions() {
   return shuffle(questions);
 }
 
-// --- Pokémon helpers ---
-function pickRandomPokemon() {
-  return GEN1_POKEMON[Math.floor(Math.random() * GEN1_POKEMON.length)];
-}
+// --- Escolha de Pokémon (sem repetir, exceto shinys) ---
+function pickPokemonForEncounter() {
+  // Decide se é shiny primeiro
+  const isShiny = Math.random() < SHINY_CHANCE;
 
-function getPokemonSpriteUrl(id, shiny = false) {
-  const base = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon';
-  return shiny ? `${base}/shiny/${id}.png` : `${base}/${id}.png`;
-}
+  // Lista de Pokémons já capturados (não shiny conta como possuído)
+  const alreadyCaught = new Set(
+    Object.keys(persistent.pokedex).map(Number)
+  );
 
-function getPokemonName(id) {
-  return POKEMON_NAMES[id] || `Pokémon #${id}`;
+  if (isShiny) {
+    // Shiny pode aparecer mesmo se já tem o normal
+    // Mas se já tem o shiny dele, sorteia outro
+    const shinyCaught = new Set(
+      Object.entries(persistent.pokedex)
+        .filter(([_, v]) => v.shiny)
+        .map(([k]) => Number(k))
+    );
+    const available = [];
+    for (let i = 1; i <= 151; i++) {
+      if (!shinyCaught.has(i)) available.push(i);
+    }
+    if (available.length === 0) {
+      // Tudo capturado em shiny — aparece um qualquer
+      return { id: Math.floor(Math.random() * 151) + 1, shiny: true };
+    }
+    return { id: available[Math.floor(Math.random() * available.length)], shiny: true };
+  }
+
+  // Normal: sorteia entre os não capturados
+  const available = [];
+  for (let i = 1; i <= 151; i++) {
+    if (!alreadyCaught.has(i)) available.push(i);
+  }
+  if (available.length === 0) {
+    // Pokédex completa — qualquer um (não persiste mudança)
+    return { id: Math.floor(Math.random() * 151) + 1, shiny: false };
+  }
+  return { id: available[Math.floor(Math.random() * available.length)], shiny: false };
 }
 
 // --- Renderização ---
@@ -738,16 +853,20 @@ function renderQuestion() {
   document.getElementById('question').textContent = `${q.a} ${symbol} ${q.b}`;
 
   // Pokémon novo para esta conta
-  session.currentPokemonId = pickRandomPokemon();
-  session.currentIsShiny = Math.random() < SHINY_CHANCE;
+  const encounter = pickPokemonForEncounter();
+  session.currentPokemonId = encounter.id;
+  session.currentIsShiny = encounter.shiny;
 
   const sprite = document.getElementById('pokemonSprite');
   sprite.src = getPokemonSpriteUrl(session.currentPokemonId, session.currentIsShiny);
   sprite.alt = getPokemonName(session.currentPokemonId);
 
-  const shinyLabel = session.currentIsShiny ? ' ✨' : '';
-  document.getElementById('pokemonName').textContent =
-    `Um ${getPokemonName(session.currentPokemonId)}${shinyLabel} selvagem apareceu!`;
+  document.getElementById('pokemonNameText').textContent =
+    getPokemonName(session.currentPokemonId);
+  document.getElementById('pokemonNum').textContent =
+    '#' + pad3(session.currentPokemonId);
+  document.getElementById('shinyTag').style.display =
+    session.currentIsShiny ? 'inline-block' : 'none';
 
   document.getElementById('current').textContent = session.currentIdx + 1;
   document.getElementById('correct').textContent = session.correct;
@@ -771,33 +890,50 @@ function renderPokedex() {
   const grid = document.getElementById('pokedexGrid');
   grid.innerHTML = '';
 
-  // Mostra acumulado entre sessões + da sessão atual
-  const allCaptured = { ...persistent.pokedex };
-  session.sessionPokedex.forEach(p => {
-    if (!allCaptured[p.id]) allCaptured[p.id] = p;
-  });
+  let capturedCount = 0;
 
-  // Mostra 20 slots por padrão; expande conforme captura
-  const slots = Math.max(20, Object.keys(allCaptured).length);
-  const sortedIds = Object.keys(allCaptured).map(Number).sort((a, b) => a - b);
-
-  for (let i = 0; i < slots; i++) {
+  for (let i = 1; i <= 151; i++) {
     const div = document.createElement('div');
     div.className = 'pokedex-slot';
-    if (sortedIds[i]) {
-      const p = allCaptured[sortedIds[i]];
+
+    const numEl = document.createElement('div');
+    numEl.className = 'num';
+    numEl.textContent = '#' + pad3(i);
+    div.appendChild(numEl);
+
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'img-wrap';
+    div.appendChild(imgWrap);
+
+    const pname = document.createElement('div');
+    pname.className = 'pname';
+    div.appendChild(pname);
+
+    const captured = persistent.pokedex[i];
+    if (captured) {
+      capturedCount++;
       div.classList.add('captured');
-      if (p.shiny) div.classList.add('shiny');
+      if (captured.shiny) div.classList.add('shiny');
+
       const img = document.createElement('img');
-      img.src = getPokemonSpriteUrl(p.id, p.shiny);
-      img.alt = getPokemonName(p.id);
-      img.title = getPokemonName(p.id) + (p.shiny ? ' ✨' : '');
-      div.appendChild(img);
+      img.src = getPokemonSpriteUrl(i, captured.shiny);
+      img.alt = getPokemonName(i);
+      imgWrap.appendChild(img);
+
+      pname.textContent = getPokemonName(i);
+    } else {
+      const q = document.createElement('div');
+      q.className = 'placeholder-q';
+      q.textContent = '?';
+      imgWrap.appendChild(q);
+
+      pname.textContent = '???';
     }
+
     grid.appendChild(div);
   }
 
-  document.getElementById('pokedexCount').textContent = Object.keys(allCaptured).length;
+  document.getElementById('pokedexCount').textContent = capturedCount;
   document.getElementById('bestScore').textContent = persistent.bestScore;
 }
 
@@ -822,30 +958,28 @@ function checkAnswer() {
 
   if (correct) {
     session.correct++;
-    // Captura o pokémon
-    const captured = {
-      id: session.currentPokemonId,
-      shiny: session.currentIsShiny
-    };
-    session.sessionPokedex.push(captured);
-    if (!persistent.pokedex[captured.id] || captured.shiny) {
-      persistent.pokedex[captured.id] = captured;
+
+    const pid = session.currentPokemonId;
+    const isShiny = session.currentIsShiny;
+    const existing = persistent.pokedex[pid];
+    const isNewToDex = !existing || (isShiny && !existing.shiny);
+
+    if (isNewToDex) {
+      persistent.pokedex[pid] = { id: pid, shiny: isShiny };
     }
 
-    const shinyTxt = session.currentIsShiny ? ' ✨ SHINY ✨' : '';
+    const shinyTxt = isShiny ? ' ✨ SHINY ✨' : '';
     fb.className = 'feedback correct';
-    fb.innerHTML = `✅ Você capturou um <strong>${getPokemonName(captured.id)}</strong>${shinyTxt}!`;
+    fb.innerHTML = `✅ Você capturou um <strong>${getPokemonName(pid)}</strong>${shinyTxt}!`;
 
     renderPokedex();
     saveState();
 
     setTimeout(() => {
       advanceQuestion();
-    }, session.currentIsShiny ? 1600 : 1000);
+    }, isShiny ? 1600 : 1000);
   } else {
     session.errors++;
-    // Registra erro na tabuada para ponderação futura
-    // (usa o operando maior da multiplicação, ou o divisor da divisão)
     const tableKey = q.type === 'mul' ? q.a : q.b;
     persistent.errorMap[tableKey] = (persistent.errorMap[tableKey] || 0) + 1;
 
@@ -880,11 +1014,9 @@ function advanceQuestion() {
 function showGameOver() {
   document.getElementById('goCorrect').textContent = session.correct;
   document.getElementById('goErrors').textContent = session.errors;
-  // Sprite do pokémon que ela errou por último
   document.getElementById('faintedSprite').src =
     getPokemonSpriteUrl(session.currentPokemonId || 25);
 
-  // Salva melhor pontuação
   if (session.correct > persistent.bestScore) {
     persistent.bestScore = session.correct;
     saveState();
@@ -913,7 +1045,6 @@ function startNewSession() {
     errors: 0,
     currentPokemonId: null,
     currentIsShiny: false,
-    sessionPokedex: [],
     awaiting: false,
   };
 
